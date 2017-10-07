@@ -29,7 +29,8 @@ Graphics_Context g_sContext;
 // Me llamo Luisai
 
 // Hola Luluisaaa, qué tal te va!? 
-// Nuevo 
+// Nuevo
+// Comentario
 uint16_t ADC14Result = 0U;
 uint16_t ADC14Resultx = 0U;
 uint16_t ADC14Resulty = 0U;
