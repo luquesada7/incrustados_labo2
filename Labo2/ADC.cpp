@@ -8,8 +8,8 @@
  * ADC interrupt: Send a message to Task 2 with ADCResultx, ADCResulty, ADCResultz
  *
  * Created on: Oct 6, 2017
- * Authors: Jose Pablo Martinez Hernandez &
- *          Luisa Fernanda Quesada Camacho
+ * Authors: Luisa Fernanda Quesada Camacho &
+ *          Jose Pablo Martinez Hernandez
  */
 #include "ADC.hpp"
 
@@ -61,4 +61,3 @@ uint8_t ADC::setup()
     return (NO_ERR);
 
 }
-
