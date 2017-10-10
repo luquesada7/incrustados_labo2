@@ -23,33 +23,36 @@ uint8_t PAINT::run()
   m_iLastPixel = m_iLastLine*128;
 
   HAL_LCD_writeCommand(CM_RAMWR);
-  if(m_bColor)
-  {
-    int i;
-    for(i=(m_iLastPixel+1); i<=(m_iPixels+m_iLastPixel); i++)
-    {
-      if(i>16384)
-      {
-        break;
-      }
-      HAL_LCD_writeData(0XAA); //brown
-      HAL_LCD_writeData(0XAA); //brown
+  if (m_bColor)
+        {
+            int j;
+           for (j = (m_iLastPixel); j >= (m_iLastPixel - m_iPixels); j--)
+           {
+               if (j < 0)
+               {
+                   break;
+               }
+                HAL_LCD_writeData(0XAA); //brown
+                HAL_LCD_writeData(0XAA); //brown
+            }
+        }
+        else
+        {
+            int i;
+            for (i = (m_iLastPixel + 1); i <= (m_iPixels + m_iLastPixel); i++)
+            {
+                if (i > 16384)
+                {
+                    break;
+                }
+                HAL_LCD_writeData(0X36); //blue
+                HAL_LCD_writeData(0X36); //blue
+            }
+        }
+
+        HAL_LCD_writeCommand(CM_DISPON);
+        
     }
-  }else{
-    int j;
-    for(j=(m_iLastPixel); j>=(m_iLastPixel-m_iPixels); j--)
-    {
-      if(j<0)
-      {
-        break;
-      }
-      HAL_LCD_writeData(0X36); //blue
-      HAL_LCD_writeData(0X36); //blue
-    }
-  }
-  
-  HAL_LCD_writeCommand(CM_DISPON);
-}
 
 uint8_t PAINT::setup()
 {
