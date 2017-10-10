@@ -1,5 +1,5 @@
 /*
- * PIXELS.cpp
+ * PIX.cpp
  *
  *  Created on: Oct 9, 2017
  *      Authors: Jose Pablo Martinez &
