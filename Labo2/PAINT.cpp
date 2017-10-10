@@ -23,7 +23,7 @@ uint8_t PAINT::run()
   m_iLastPixel = m_iLastLine*128;
 
   HAL_LCD_writeCommand(CM_RAMWR);
-  if(bool)
+  if(m_bColor)
   {
     int i;
     for(i=(m_iLastPixel+1); i<=(m_iPixels+m_iLastPixel); i++)
@@ -43,8 +43,8 @@ uint8_t PAINT::run()
       {
         break;
       }
-      HAL_LCD_writeData(0XAA); //blue
-      HAL_LCD_writeData(0XAA); //blue
+      HAL_LCD_writeData(0X36); //blue
+      HAL_LCD_writeData(0X36); //blue
     }
   }
   
