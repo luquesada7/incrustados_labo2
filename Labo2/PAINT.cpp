@@ -26,7 +26,7 @@ uint8_t PAINT::run()
   if(bool)
   {
     int i;
-    for(i=(m_iLastPixel+1); i>=(m_iPixels+m_iLastPixel); i++)
+    for(i=(m_iLastPixel+1); i<=(m_iPixels+m_iLastPixel); i++)
     {
       if(i>16384)
       {
@@ -37,7 +37,7 @@ uint8_t PAINT::run()
     }
   }else{
     int j;
-    for(j=(m_iLastPixel); j<=(m_iPixels-m_iLastPixel); j--)
+    for(j=(m_iLastPixel); j>=(m_iLastPixel-m_iPixels); j--)
     {
       if(j<0)
       {
@@ -47,8 +47,7 @@ uint8_t PAINT::run()
       HAL_LCD_writeData(0XAA); //blue
     }
   }
-
-  HAL_LCD_delay(10);
+  
   HAL_LCD_writeCommand(CM_DISPON);
 }
 
