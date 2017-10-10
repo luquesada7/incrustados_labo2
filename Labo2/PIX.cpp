@@ -12,7 +12,7 @@
  */
 
 #include "PIX.hpp"
-#include <cmath>
+#include <stdlib.h>
 
 PIX::PIX()
 {
@@ -38,7 +38,7 @@ uint8_t PIX::run()
   //################################
   m_fDelta = abs(m_fNewZ- m_fPastZ);
   m_iLines = 1 + ((m_fDelta*l_fPixDelta - l_iPixLine)/l_iPixLine);
-  }
+}
 
 uint8_t PIX::setup()
 {
