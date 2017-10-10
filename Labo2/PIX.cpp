@@ -14,15 +14,12 @@
 #include "PIX.hpp"
 #include <cmath>
 
-PIXELS::PIXELS()
+PIX::PIX()
 {
 }
 
-uint8_t PIXELS::run()
+uint8_t PIX::run()
 {
-  l_fPixDelta = 1000; //Falta calcular
-  l_iPixLine = 128;
-
   //################################
   // Selecting color to paint pixels
   // - false = blue
@@ -43,7 +40,7 @@ uint8_t PIXELS::run()
   m_iLines = 1 + ((m_fDelta*l_fPixDelta - l_iPixLine)/l_iPixLine);
   }
 
-uint8_t LED::setup()
+uint8_t PIX::setup()
 {
   m_fPastZ = 8000;//Falta calcular
 }
