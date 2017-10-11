@@ -24,9 +24,9 @@ uint8_t PAINT::run()
 
   if (m_bColor)
         {
-            m_iNewLine = m_iLastLine + m_iLines;
-            l_stRect.sYMin = m_iLastLine;
-            l_stRect.sYMax = m_iNewLine;
+            m_iNewLine = m_iLastLine - m_iLines;
+            l_stRect.sYMin = m_iNewLine;
+            l_stRect.sYMax = m_iLastLine;
 
             l_uint16tulValue = 0XAA; //brown
 
@@ -35,9 +35,9 @@ uint8_t PAINT::run()
         }
         else
         {
-            m_iNewLine = m_iLastLine - m_iLines;
-            l_stRect.sYMin = m_iNewLine;
-            l_stRect.sYMax = m_iLastLine;
+            m_iNewLine = m_iLastLine + m_iLines;
+            l_stRect.sYMin = m_iLastLine;
+            l_stRect.sYMax = m_iNewLine;
 
             l_uint16tulValue = 0X36; //blue
 
