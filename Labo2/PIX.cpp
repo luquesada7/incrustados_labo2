@@ -16,7 +16,9 @@
 
 PIX::PIX()
 {
-}i
+  const float l_fPixDelta = 55;
+  const int l_iPixLine = 128;
+}
 
 uint8_t PIX::run()
 {
