@@ -25,7 +25,7 @@ class PIX : public Task
         int m_iLines;
         bool m_bColor;
     private:
-        const float l_fPixDelta ;
+        const float l_fPixDelta;
         const int l_iPixLine;
 };
 
