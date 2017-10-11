@@ -16,7 +16,7 @@
 
 PIX::PIX()
 {
-}
+}i
 
 uint8_t PIX::run()
 {
