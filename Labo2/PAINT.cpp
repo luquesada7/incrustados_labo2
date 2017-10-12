@@ -15,49 +15,59 @@
 
 PAINT::PAINT()
 {
-  const float l_fPixDelta = 55 ;
-  const int l_iPixLine = 128;
+    const float l_fPixDelta = 128.0 / 7000.0;
+    const int l_iPixLine = 128;
 }
 
 uint8_t PAINT::run()
 {
-  m_iPixels = m_iLines*128;
-  m_iLastPixel = m_iLastLine*128;
+    m_stRect.xMin = 0;
+    m_stRect.xMax = 127;
 
-  HAL_LCD_writeCommand(CM_RAMWR);
-  if (m_bColor)
+    if (m_bColor)
+    {
+        m_iNewLine = m_iLastLine - m_iLines;
+        if (m_iNewLine < 0)
         {
-            int j;
-           for (j = (m_iLastPixel); j >= (m_iLastPixel - m_iPixels); j--)
-           {
-               if (j < 0)
-               {
-                   break;
-               }
-                HAL_LCD_writeData(0XAA); //brown
-                HAL_LCD_writeData(0XAA); //brown
-            }
+            m_stRect.yMin = 0;
+            m_stRect.yMax = m_iLastLine;
         }
         else
         {
-            int i;
-            for (i = (m_iLastPixel + 1); i <= (m_iPixels + m_iLastPixel); i++)
-            {
-                if (i > 16384)
-                {
-                    break;
-                }
-                HAL_LCD_writeData(0X36); //blue
-                HAL_LCD_writeData(0X36); //blue
-            }
+            m_stRect.yMin = m_iNewLine;
+            m_stRect.yMax = m_iLastLine;
         }
 
-        HAL_LCD_writeCommand(CM_DISPON);
-        
+        l_uint16tulValue = 0XAA00; //brown
+
+        Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &m_stRect,
+                                        l_uint16tulValue);
     }
+    else
+    {
+        m_iNewLine = m_iLastLine + m_iLines;
+
+        if (m_iNewLine > 128)
+        {
+            m_stRect.yMin = m_iLastLine;
+            m_stRect.yMax = 127;
+        }
+        else
+        {
+            m_stRect.yMin = m_iLastLine;
+            m_stRect.yMax = m_iNewLine;
+        }
+
+        l_uint16tulValue = 0X00CF; //blue
+
+        Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &m_stRect,
+                                        l_uint16tulValue);
+    }
+
+}
 
 uint8_t PAINT::setup()
 {
   m_iLastLine = 64; //middle of LCD
-  //Setup de la pantalla? 
+  //Setup de la pantalla?
 }

@@ -10,6 +10,7 @@
 #define PAINT_HPP_
 #define __NOP __nop
 #include <ti/devices/msp432p4xx/inc/msp.h>
+#include <C:/ti/simplelink_msp432_sdk_1_40_01_00/source/ti/grlib/grlib.h>
 #include "Task.hpp"
 
 class PAINT : public Task
@@ -24,6 +25,7 @@ class PAINT : public Task
         int m_iPixels;
         int m_iLines;
         bool m_bColor;
+        Graphics_Rectangle m_stRect;
     private:
 };
 
