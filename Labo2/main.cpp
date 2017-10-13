@@ -6,7 +6,6 @@
 #include "ADC.hpp"
 #include "Strct.hpp"
 
-
 uint16_t ADC14Resultx = 0U;
 uint16_t ADC14Resulty = 0U;
 uint16_t ADC14Resultz = 0U;
@@ -18,7 +17,9 @@ uint8_t Task::m_u8NextTaskID = 0; // - Init task ID
 volatile static uint64_t g_SystemTicks = 0; // - The system counter.
 Scheduler g_MainScheduler; // - Instantiate a Scheduler
 st_Node *g_pLinkedList = NULL;
-extern int g_aSendMessageFlag[255];
+uint8_t g_aSendMessageFlag[NUMBER_OF_SLOTS] = {0};
+uint8_t g_aExecuteNextFrame[NUMBER_OF_SLOTS] = {0};
+Task * g_aTaskPointers[NUMBER_OF_SLOTS] = {(uintptr_t) 0};
 
 // #########################
 //          MAIN
@@ -27,14 +28,10 @@ void main(void)
 {
 
     // - Instantiate two new Tasks
-    LED BlueLED(BIT2);
-    LED GreenLED(BIT1);
     ADC TestADC(1,2,3);
     // - Run the overall setup function for the system
     Setup();
     // - Attach the Tasks to the Scheduler;
-    g_MainScheduler.attach(&BlueLED, 500);
-    g_MainScheduler.attach(&GreenLED, 300);
     g_MainScheduler.attach(&TestADC, 10);
     // - Run the Setup for the scheduler and all tasks
     g_MainScheduler.setup();
@@ -187,11 +184,20 @@ extern "C"
     {
         __disable_irq();
         P5->OUT ^= BIT6;
-        ADC14Resultz = ADC14->MEM[1];
-        ADC14Resulty = ADC14->MEM[2];
-        ADC14Resultx = ADC14->MEM[3];
+        m_fADC14Resultz = ADC14->MEM[1];
+        m_fADC14Resulty = ADC14->MEM[2];
+        m_fADC14Resultx = ADC14->MEM[3];
         ADC14->CLRIFGR0 =  ADC14_CLRIFGR0_CLRIFG1
                 | ADC14_CLRIFGR0_CLRIFG2 | ADC14_CLRIFGR0_CLRIFG3;
+
+        if(abs(m_fPastADC14Resultz-m_fADC14Resultz)>= 50.0)
+        {
+        //- Flag of Next Task that should be executed if dADCz is big enough
+        g_aExecuteNextFrame[m_u8NextTaskID] = 1;
+
+        //- Flag to tell the Scheduler the Task wants to send a message
+        g_aSendMessageFlag[m_u8MyTaskID] = 1;
+        }
         __enable_irq();
         return;
     }

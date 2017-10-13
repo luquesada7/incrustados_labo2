@@ -18,6 +18,7 @@ PIX::PIX()
 {
   const float l_fPixDelta = 55;
   const int l_iPixLine = 128;
+  m_aNextTaskID = 2; // - When finished execute Task 2 = PAINT
 }
 
 uint8_t PIX::run()
@@ -40,9 +41,27 @@ uint8_t PIX::run()
   //################################
   m_fDelta = abs(m_fNewZ- m_fPastZ);
   m_iLines = 1 + ((m_fDelta*l_fPixDelta - l_iPixLine)/l_iPixLine);
+  m_fPastZ = m_fNewZ; //- saving new m_fPastZ
+
+  //- Flag to tell the Scheduler the Task wants to send a message
+  g_aSendMessageFlag[m_u8MyTaskID] = 1;
+
+  //- Flag of Next Task that should be executed
+  g_aExecuteNextFrame[m_u8NextTaskID] = 1;
 }
 
 uint8_t PIX::setup()
 {
   m_fPastZ = 8000;//Falta calcular
+}
+
+uint8_t PAINT::readMessage(st_Message * l_stNewMessage)
+{
+    m_fNewZ = l_stNewMessage->std_fFloatData;
+}
+
+uint8_t PAINT::sendMessage(st_Message * l_stNewMessage)
+{
+    l_stNewMessage->std_bBoolData = m_bColor;
+    l_stNewMessage->std_u16IntData = m_iLines;
 }

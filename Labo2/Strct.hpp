@@ -14,6 +14,7 @@ struct st_Message{
     uint8_t std_u8DestTaskID; // - Task ID de la tarea destino
     uint16_t std_u16IntData ; // - Mensaje de tipo integer
     float std_fFloatData; // - Mensaje de tipo float
+    bool std_bBoolData; // - Mensaje de tipo bool
 };
 
 struct st_Node{

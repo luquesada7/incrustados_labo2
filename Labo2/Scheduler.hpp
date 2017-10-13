@@ -16,8 +16,9 @@
 
 /* Variables globales del programa */
 extern st_Node *g_pLinkedList;
-extern int g_aSendMessageFlag[255];
-extern int g_aExecuteNextFrame[255];
+extern uint8_t g_aSendMessageFlag[NUMBER_OF_SLOTS];
+extern uint8_t g_aExecuteNextFrame[NUMBER_OF_SLOTS];
+extern Task * g_aTaskPointers[NUMBER_OF_SLOTS];
 
 // - This structure defines the Task Information
 struct st_TaskInfo {
@@ -32,6 +33,7 @@ class Scheduler
 public:
     Scheduler();
     uint64_t m_u64ticks;
+	uint8_t m_u8TaskCounter;
     uint8_t attach(Task * i_ToAttach, uint64_t i_u64TickInterval);
     uint8_t run(void);
     uint8_t setup(void);
@@ -41,7 +43,12 @@ private:
     st_TaskInfo m_aSchedule[NUMBER_OF_SLOTS]; // - Current schedule to be executed
     st_TaskInfo m_aNextSchedule[NUMBER_OF_SLOTS]; // - Next schedule to be executed (not implemented)
     uint8_t CalculateNextSchedule(void); // - Calculate next schedule tasks (not implemented)
-    uint8_t SortScheduleByPriority(Task * i_pSchedule); // - Sorts a schedule based on priority (not implemented)
+	uint8_t CollectMessages(void); // - Collects al messages from Tasks
+	uint8_t DistributeMessages(void); // - Distributes messages between Tasks
+	uint8_t InsertNode(st_Node *&st_pLinkedList, st_Message l_stNewMessage); // - Inserts node to linked list with mail
+	uint8_t EraseFirstNode(st_Node *&st_pLinkedList, st_Message &l_stMessage); // - Erases first node of linked list
+    //uint8_t SortScheduleByPriority(Task * i_pSchedule); // - Sorts a schedule based on priority (not implemented)
+
 };
 
 

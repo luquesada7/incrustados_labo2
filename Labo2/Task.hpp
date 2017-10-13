@@ -6,11 +6,14 @@
 
 #define NO_ERR 0
 #define RET_ERR 1
+#define NUMBER_OF_SLOTS 255
+#define NULL            0
 
 /* Variables globales del programa */
 extern st_Node *g_pLinkedList;
-extern int g_aSendMessageFlag[255];
-extern int g_aExecuteNextFrame[255];
+extern uint8_t g_aSendMessageFlag[NUMBER_OF_SLOTS];
+extern uint8_t g_aExecuteNextFrame[NUMBER_OF_SLOTS];
+extern Task * g_aTaskPointers[NUMBER_OF_SLOTS];
 
 class Task
 {
@@ -20,7 +23,7 @@ class Task
 		virtual uint8_t     run(void){return(0);};
 		virtual uint8_t     setup(void){return(0);};
 		virtual uint8_t     readMessage(st_Message * l_stNewMessage){return(0);};
-		virtual st_Message * sendMessage(void){return ;};
+		virtual st_Message * sendMessage(st_Message * l_stNewMessage){return l_stNewMessage;};
 		bool                IsTaskFinished(void){return m_bIsFinished;};
 		uint8_t             GetTaskPriority(void) {return m_u8Priority;};
 		void                SetTaskPriority(uint8_t i_u8NewPriority){m_u8Priority = i_u8NewPriority;};

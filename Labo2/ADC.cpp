@@ -15,17 +15,20 @@
 
 ADC::ADC(uint16_t Ax, uint16_t Ay, uint16_t Az)
 {
-    ADC14Resultx = Ax;
-    ADC14Resulty = Ay;
-    ADC14Resultz = Az;
+    m_fADC14Resultx = Ax;
+    m_fADC14Resulty = Ay;
+    m_fADC14Resultz = Az;
 }
 
 uint8_t ADC::run()
 {
+    m_fPastADC14Resultz = m_fADC14Resultz; // -saving last value
+
     //ADC14->CLRIFGR0 =  ADC14_CLRIFGR0_CLRIFG1
     //                | ADC14_CLRIFGR0_CLRIFG2 | ADC14_CLRIFGR0_CLRIFG3;
     ADC14->CTL0 = ADC14->CTL0 | ADC14_CTL0_SC; // Start
     P2->OUT ^= BIT6;
+
     return (NO_ERR);
 }
 
@@ -60,4 +63,9 @@ uint8_t ADC::setup()
 
     return (NO_ERR);
 
+}
+
+uint8_t PAINT::sendMessage(st_Message * l_stNewMessage)
+{
+    l_stNewMessage->std_fFloatData = m_fADC14Resultz;
 }
