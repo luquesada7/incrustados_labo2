@@ -12,6 +12,10 @@
 #include <ti/devices/msp432p4xx/inc/msp.h>
 #include <C:/ti/simplelink_msp432_sdk_1_40_01_00/source/ti/grlib/grlib.h>
 #include "Task.hpp"
+#include "Strct.hpp"
+
+/* Variables globales del programa */
+extern st_Node *g_pLinkedList;
 
 class PAINT : public Task
 {

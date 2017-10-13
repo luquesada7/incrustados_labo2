@@ -4,6 +4,7 @@
 #include "Task.hpp"
 #include "LED.hpp"
 #include "ADC.hpp"
+#include "Strct.hpp"
 
 
 uint16_t ADC14Resultx = 0U;

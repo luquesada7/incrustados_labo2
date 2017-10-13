@@ -11,6 +11,10 @@
 #define __NOP __nop
 #include <ti/devices/msp432p4xx/inc/msp.h>
 #include "Task.hpp"
+#include "Strct.hpp"
+
+/* Variables globales del programa */
+extern st_Node *g_pLinkedList;
 
 class PIX : public Task
 {

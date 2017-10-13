@@ -9,9 +9,13 @@
 #define TASKS_SCHEDULER_HPP_
 #include <ti/devices/msp432p4xx/inc/msp.h>
 #include "Task.hpp"
+#include "Strct.hpp"
 
 #define NUMBER_OF_SLOTS 255
 #define NULL            0
+
+/* Variables globales del programa */
+extern st_Node *g_pLinkedList;
 
 // - This structure defines the Task Information
 struct st_TaskInfo {

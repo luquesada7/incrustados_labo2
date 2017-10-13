@@ -20,16 +20,19 @@
 #include <C:/ti/simplelink_msp432_sdk_1_40_01_00/source/ti/devices/msp432p4xx/driverlib/driverlib.h>
 #include <C:/ti/simplelink_msp432_sdk_1_40_01_00/source/ti/grlib/grlib.h>
 #include "Task.hpp"
+#include "Strct.hpp"
+/* Variables globales del programa */
+extern st_Node *g_pLinkedList;
 
 class ADC: public Task
 {
     public:
     ADC(uint16_t, uint16_t, uint16_t);
-    virtual uint8_t run(void);
-    virtual uint8_t setup(void);
     uint16_t ADC14Resultx;
     uint16_t ADC14Resulty;
     uint16_t ADC14Resultz;
+    virtual uint8_t run(void);
+    virtual uint8_t setup(void);
   protected:
   private:
 };

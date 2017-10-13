@@ -2,9 +2,13 @@
 #define TASK_HPP_
 
 #include <ti/devices/msp432p4xx/inc/msp.h>
+#include "Strct.hpp"
 
 #define NO_ERR 0
 #define RET_ERR 1
+
+/* Variables globales del programa */
+extern st_Node *g_pLinkedList;
 
 class Task
 {

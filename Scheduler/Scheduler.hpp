@@ -21,11 +21,19 @@ struct st_TaskInfo {
 	uint64_t u64TickIntervalInitValue; // - Value to reset
 };
 
+struct m_stMssgInfo{
+	uint8_t st_u8Src;
+	uint8_t st_u8Dest;
+	float st_fMessage;
+	uint8_t st_u8TypeTask;
+};
+
 class Scheduler
 {
 public:
     Scheduler();
     uint64_t m_u64ticks;
+	m_stMssgInfo m_aMailBox[NUMBER_OF_SLOTS]; // - Array of message structs
     uint8_t attach(Task * i_ToAttach, uint64_t i_u64TickInterval);
     uint8_t run(void);
     uint8_t setup(void);
