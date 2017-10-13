@@ -23,6 +23,8 @@
 #include "Strct.hpp"
 /* Variables globales del programa */
 extern st_Node *g_pLinkedList;
+extern int g_aSendMessageFlag[255];
+extern int g_aExecuteNextFrame[255];
 
 class ADC: public Task
 {

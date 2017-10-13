@@ -16,6 +16,8 @@
 
 /* Variables globales del programa */
 extern st_Node *g_pLinkedList;
+extern int g_aSendMessageFlag[255];
+extern int g_aExecuteNextFrame[255];
 
 // - This structure defines the Task Information
 struct st_TaskInfo {

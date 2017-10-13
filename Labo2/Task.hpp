@@ -9,6 +9,8 @@
 
 /* Variables globales del programa */
 extern st_Node *g_pLinkedList;
+extern int g_aSendMessageFlag[255];
+extern int g_aExecuteNextFrame[255];
 
 class Task
 {
@@ -17,6 +19,8 @@ class Task
 		uint8_t m_u8TaskID;
 		virtual uint8_t     run(void){return(0);};
 		virtual uint8_t     setup(void){return(0);};
+		virtual uint8_t     readMessage(st_Message * l_stNewMessage){return(0);};
+		virtual st_Message * sendMessage(void){return ;};
 		bool                IsTaskFinished(void){return m_bIsFinished;};
 		uint8_t             GetTaskPriority(void) {return m_u8Priority;};
 		void                SetTaskPriority(uint8_t i_u8NewPriority){m_u8Priority = i_u8NewPriority;};

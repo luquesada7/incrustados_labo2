@@ -17,6 +17,8 @@ uint16_t ADC14Resultz = 0U;
 uint8_t Task::m_u8NextTaskID = 0; // - Init task ID
 volatile static uint64_t g_SystemTicks = 0; // - The system counter.
 Scheduler g_MainScheduler; // - Instantiate a Scheduler
+st_Node *g_pLinkedList = NULL;
+extern int g_aSendMessageFlag[255];
 
 // #########################
 //          MAIN
