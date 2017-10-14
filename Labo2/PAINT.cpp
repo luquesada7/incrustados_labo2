@@ -67,14 +67,11 @@ uint8_t PAINT::run()
 
     m_iLastLine = m_iNewLine; //- saving new LastLine
 
-    // Activate Flag of Next Task that should be executed
-    g_aExecuteNextFrame[m_u8NextTaskID] = 2;
 }
 
 uint8_t PAINT::setup()
 {
   m_iLastLine = 64; //middle of LCD
-  //Setup de la pantalla?
 }
 
 uint8_t PAINT::readMessage(st_Message * l_stNewMessage)

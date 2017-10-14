@@ -28,7 +28,7 @@ uint8_t Scheduler::attach(Task * i_ToAttach, uint64_t i_u64TickInterval)
     l_st_StructToAttach.u64TickInterval = 0;
 	l_st_StructToAttach.u64TickIntervalInitValue = i_u64TickInterval;
 
-    if((m_u8OpenSlots>0) && (m_u8NextSlot < NUMBER_OF_SLOTS))
+    if((m_u8OpenSlots>0) && (m_u8NextSlot < NUMBER_OF_SLOTS) && (m_u8TaskCounter < NUMBER_OF_SLOTS))
     {
         m_aSchedule[m_u8NextSlot] =  l_st_StructToAttach;
         m_u8OpenSlots--;
@@ -70,7 +70,12 @@ uint8_t Scheduler::run(void)
 		}
 		l_iNextTaskSlot++;
     }
-    CalculateNextSchedule(); // TODO
+    CollectMessages();
+    DistributeMessages();
+    CalculateNextSchedule();
+
+    //TODO: m_aSchedule = m_aNextSchedule
+    //      Ressolve TaskID
 
     return l_u8ReturnCode;
 }
@@ -109,7 +114,7 @@ uint8_t Scheduler::CalculateNextSchedule(void)
 
     for(int l_iCounter; l_iCounter < NUMBER_OF_SLOTS; l_iCounter++)
     {
-        if(g_aExecuteNextFrame[l_iCounter] == 1)
+        if(g_aExecuteNextFrame[l_iCounter] == 1 && l_u8Schedule < NUMBER_OF_SLOTS)
         {
             l_st_StructToAttach = m_aTaskInfoStructs[l_iCounter];
             m_aNextSchedule[l_u8Schedule] = l_st_StructToAttach;

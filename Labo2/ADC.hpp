@@ -43,7 +43,6 @@ class ADC: public Task
     uint16_t m_fPastADC14Resultx;
     uint16_t m_fPastADC14Resulty;
     uint16_t m_fPastADC14Resultz;
-    uint8_t m_u8NextTaskID;
     virtual uint8_t run(void);
     virtual uint8_t setup(void);
 	virtual uint8_t sendMessage(st_Message * l_stNewMessage);

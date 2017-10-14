@@ -28,7 +28,7 @@ void main(void)
 {
 
     // - Instantiate two new Tasks
-    ADC TestADC(1,2,3);
+    ADC TestADC();
     // - Run the overall setup function for the system
     Setup();
     // - Attach the Tasks to the Scheduler;

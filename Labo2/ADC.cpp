@@ -15,8 +15,8 @@
 
 ADC::ADC()
 {
-    m_u8MyTaskID = 0;
-    m_u8NextTaskID = 1;
+    //m_u8MyTaskID = 0;
+    //m_u8NextTaskID = 1;
 }
 
 uint8_t ADC::run()

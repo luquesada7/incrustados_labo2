@@ -47,7 +47,7 @@ private:
 	uint8_t CollectMessages(void); // - Collects al messages from Tasks
 	uint8_t DistributeMessages(void); // - Distributes messages between Tasks
 	uint8_t InsertNode(st_Node *&st_pLinkedList, st_Message l_stNewMessage); // - Inserts node to linked list with mail
-	uint8_t EraseFirstNode(st_Node *&st_pLinkedList, st_Message &l_stMessage); // - Erases first node of linked list
+	uint8_t DistributeEraseFirstNode(st_Node *&st_pLinkedList, st_Message &l_stMessage); // - Erases first node of linked list
     //uint8_t SortScheduleByPriority(Task * i_pSchedule); // - Sorts a schedule based on priority (not implemented)
 
 };

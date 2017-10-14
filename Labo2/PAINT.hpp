@@ -22,6 +22,7 @@ extern st_Node *g_pLinkedList;
 extern uint8_t g_aSendMessageFlag[NUMBER_OF_SLOTS];
 extern uint8_t g_aExecuteNextFrame[NUMBER_OF_SLOTS];
 extern Task * g_aTaskPointers[NUMBER_OF_SLOTS];
+
 class PAINT : public Task
 {
     public:
@@ -33,9 +34,8 @@ class PAINT : public Task
 		virtual uint8_t sendMessage(st_Message * l_stNewMessage);
     protected:
         int m_iLastLine;
-        int m_iLastPixel;
-        int m_iPixels;
         int m_iLines;
+        int m_iNewLine;
         bool m_bColor;
         Graphics_Rectangle m_stRect;
     private:

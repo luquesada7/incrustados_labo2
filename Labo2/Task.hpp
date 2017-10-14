@@ -23,13 +23,13 @@ class Task
 		virtual uint8_t     run(void){return(0);};
 		virtual uint8_t     setup(void){return(0);};
 		virtual uint8_t     readMessage(st_Message * l_stNewMessage){return(0);};
-		virtual st_Message * sendMessage(st_Message * l_stNewMessage){return l_stNewMessage;};
+		virtual uint8_t sendMessage(st_Message * l_stNewMessage){return l_stNewMessage;};
 		bool                IsTaskFinished(void){return m_bIsFinished;};
-		uint8_t             GetTaskPriority(void) {return m_u8Priority;};
-		void                SetTaskPriority(uint8_t i_u8NewPriority){m_u8Priority = i_u8NewPriority;};
+		//uint8_t             GetTaskPriority(void) {return m_u8Priority;};
+		//void                SetTaskPriority(uint8_t i_u8NewPriority){m_u8Priority = i_u8NewPriority;};
 	private:
 	   static uint8_t m_u8NextTaskID;
-	   uint8_t m_u8Priority;
+	   //uint8_t m_u8Priority;
 	protected:
 	   bool m_bIsFinished;
 };
