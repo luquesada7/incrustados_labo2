@@ -17,6 +17,7 @@ PAINT::PAINT()
 {
     const float l_fPixDelta = 128.0 / 7000.0;
     const int l_iPixLine = 128;
+    m_u8MyTaskID = 2;
 }
 
 uint8_t PAINT::run()

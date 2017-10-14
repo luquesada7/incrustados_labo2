@@ -18,7 +18,8 @@ PIX::PIX()
 {
   const float l_fPixDelta = 55;
   const int l_iPixLine = 128;
-  m_aNextTaskID = 2; // - When finished execute Task 2 = PAINT
+  m_u8MyTaskID = 1;
+  m_u8NextTaskID = 2; // - When finished execute Task 2 = PAINT
 }
 
 uint8_t PIX::run()

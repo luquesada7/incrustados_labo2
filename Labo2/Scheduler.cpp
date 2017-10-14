@@ -34,6 +34,8 @@ uint8_t Scheduler::attach(Task * i_ToAttach, uint64_t i_u64TickInterval)
         m_u8OpenSlots--;
         m_u8NextSlot++;
         g_aTaskPointers[m_u8TaskCounter] = i_ToAttach;
+        m_aTaskInfoStructs[m_u8TaskCounter] = l_st_StructToAttach;
+        m_u8TaskCounter++;
     }
     else
     {
@@ -97,7 +99,23 @@ uint8_t Scheduler::setup(void)
 
 uint8_t Scheduler::CalculateNextSchedule(void)
 {
+    Task * l_pTaskPointer = (unintptr_t)0;
+    uint8_t l_u8Schedule = 0;
 
+    for(int index1 = 0; index1 < NUMBER_OF_SLOTS; index1++)
+    {
+        m_aNextSchedule[index1].pToAttach = (uintptr_t) 0; // Init to an invalid pointer
+    }
+
+    for(int l_iCounter; l_iCounter < NUMBER_OF_SLOTS; l_iCounter++)
+    {
+        if(g_aExecuteNextFrame[l_iCounter] == 1)
+        {
+            l_st_StructToAttach = m_aTaskInfoStructs[l_iCounter];
+            m_aNextSchedule[l_u8Schedule] = l_st_StructToAttach;
+            l_u8Schedule++;
+        }
+    }
     return(NO_ERR);
 }
 

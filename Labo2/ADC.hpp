@@ -34,7 +34,7 @@ extern Task * g_aTaskPointers[NUMBER_OF_SLOTS];
 class ADC: public Task
 {
     public:
-    ADC(uint16_t, uint16_t, uint16_t);
+    ADC(void);
     uint8_t m_u8MyTaskID; // - My TaskID
     uint8_t m_u8NextTaskID; // - Next Task to be executed
     uint16_t m_fADC14Resultx;

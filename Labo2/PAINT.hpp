@@ -27,7 +27,6 @@ class PAINT : public Task
     public:
         PAINT(void);
         uint8_t m_u8MyTaskID; // - My TaskID
-        uint8_t m_u8NextTaskID; // - Next Task to be executed
         virtual uint8_t run(void);
         virtual uint8_t setup(void);
         virtual uint8_t readMessage(st_Message * l_stNewMessage);

@@ -13,11 +13,10 @@
  */
 #include "ADC.hpp"
 
-ADC::ADC(uint16_t Ax, uint16_t Ay, uint16_t Az)
+ADC::ADC()
 {
-    m_fADC14Resultx = Ax;
-    m_fADC14Resulty = Ay;
-    m_fADC14Resultz = Az;
+    m_u8MyTaskID = 0;
+    m_u8NextTaskID = 1;
 }
 
 uint8_t ADC::run()
