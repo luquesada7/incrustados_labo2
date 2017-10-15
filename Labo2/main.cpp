@@ -77,93 +77,15 @@ void Setup(void)
 	// - Re-enable interrupts
 	TIMER32_1->LOAD = TIMER32_COUNT; //~1ms ---> a 3Mhz
 	TIMER32_1->CONTROL = TIMER32_CONTROL_SIZE | TIMER32_CONTROL_PRESCALE_0 | TIMER32_CONTROL_MODE | TIMER32_CONTROL_IE | TIMER32_CONTROL_ENABLE;
+	
 	NVIC_SetPriority(T32_INT1_IRQn,1);
 	NVIC_EnableIRQ(T32_INT1_IRQn);
 
 	NVIC_SetPriority(ADC14_IRQn, 1);
 	NVIC_EnableIRQ(ADC14_IRQn);
+	
 	__enable_irq();
-
-    /*    WDTCTL = WDTPW | WDTHOLD; // Stop watchdog timer
-
-        P1->DIR = BIT0;
-        P1->OUT = BIT0;
-    // Set P4.3 for Analog input, disabling the I/O circuit.
-        P4->SEL0 = BIT3;
-        P4->SEL1 = BIT3;
-        P4->DIR &= ~BIT3;
-
-        // Configures Pin 4.0, 4.2, and 6.1 as ADC input
-        P4->SEL0 = BIT0;
-        P4->SEL1 = BIT0;
-        P4->DIR &= ~BIT0;
-        P4->SEL0 = BIT2;
-        P4->SEL1 = BIT2;
-        P4->DIR &= ~BIT2;
-        P6->SEL0 = BIT1;
-        P6->SEL1 = BIT1;
-        P6->DIR &= ~BIT1;
-
-    //TIMER32_1->LOAD = 0x00B71B00; //~0.5s ---> a 48Mhz
-        TIMER32_1->LOAD = 0x0000BB80; //~0.5s ---> a 48Mhz
-        TIMER32_1->CONTROL =
-        TIMER32_CONTROL_SIZE | TIMER32_CONTROL_PRESCALE_0 | TIMER32_CONTROL_MODE
-                | TIMER32_CONTROL_IE | TIMER32_CONTROL_ENABLE;
-        NVIC_SetPriority(T32_INT1_IRQn, 1);
-        NVIC_EnableIRQ(T32_INT1_IRQn);
-
-        ADC14->CTL0 = ADC14_CTL0_PDIV_0 | ADC14_CTL0_SHS_0 | ADC14_CTL0_DIV_7 |
-        ADC14_CTL0_SSEL__MCLK | ADC14_CTL0_SHT0_1 | ADC14_CTL0_ON | ADC14_CTL0_SHP
-                | ADC14_CTL0_CONSEQ_3;
-
-    //ADC14->MCTL[0] = ADC14_MCTLN_INCH_10 | ADC14_MCTLN_VRSEL_0;
-        ADC14->MCTL[1] = ADC14_MCTLN_INCH_11 | ADC14_MCTLN_VRSEL_0;
-        ADC14->MCTL[2] = ADC14_MCTLN_INCH_13 | ADC14_MCTLN_VRSEL_0;
-        ADC14->MCTL[3] = ADC14_MCTLN_INCH_14 | ADC14_MCTLN_VRSEL_0;
-
-        ADC14->CTL0 = ADC14->CTL0 | ADC14_CTL0_ENC;
-        ADC14->IER0 = ADC14_IER0_IE1 | ADC14_IER0_IE2 | ADC14_IER0_IE3;
-        NVIC_SetPriority(ADC14_IRQn, 1);
-        NVIC_EnableIRQ(ADC14_IRQn);
-
-        // Initializes display
-        Crystalfontz128x128_Init();
-
-        // Set default screen orientation
-        Crystalfontz128x128_SetOrientation(LCD_ORIENTATION_UP);
-
-        // Initializes graphics context
-        Graphics_initContext(&g_sContext, &g_sCrystalfontz128x128,
-                             &g_sCrystalfontz128x128_funcs);
-        Graphics_setForegroundColor(&g_sContext, GRAPHICS_COLOR_RED);
-        Graphics_setBackgroundColor(&g_sContext, GRAPHICS_COLOR_WHITE);
-        GrContextFontSet(&g_sContext, &g_sFontFixed6x8);
-
-        // Paint initial display
-
-        Graphics_Rectangle l_stRectInit;
-
-        uint16_t l_uint16tValue;
-
-        l_stRectInit.xMin = 0;
-        l_stRectInit.xMax = 127;
-        l_stRectInit.yMin = 0;
-        l_stRectInit.yMax = 63;
-
-        l_uint16tValue = 0X00FF; //blue
-
-        Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &l_stRectInit,
-                                        l_uint16tValue);
-        l_stRectInit.xMin = 0;
-        l_stRectInit.xMax = 127;
-        l_stRectInit.yMin = 64;
-        l_stRectInit.yMax = 127;
-
-        l_uint16tValue = 0XAA00; //brown
-
-        Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &l_stRectInit,
-                                        l_uint16tValue); */
-
+	
 	return;
 }
 
