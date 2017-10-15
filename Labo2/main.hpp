@@ -14,8 +14,6 @@
 
 /* Variables globales del programa */
 extern st_Node *g_pLinkedList;
-extern uint8_t g_aSendMessageFlag[255];
-extern uint8_t g_aExecuteNextFrame[255];
 extern Task * g_aTaskPointers[255];
 
 // The main Setup function for the application

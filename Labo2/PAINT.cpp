@@ -17,24 +17,22 @@ PAINT::PAINT()
 {
     const float l_fPixDelta = 128.0 / 7000.0;
     const int l_iPixLine = 128;
-    m_u8MyTaskID = 2;
+    m_pKey = "PAINT";
 }
 
 uint8_t PAINT::run()
 {
+    m_bRunFlag = 0;
     m_stRect.xMin = 0;
     m_stRect.xMax = 127;
 
-    if (m_bColor)
-    {
+    if (m_bColor) {
         m_iNewLine = m_iLastLine - m_iLines;
-        if (m_iNewLine < 0)
-        {
+        if (m_iNewLine < 0) {
             m_stRect.yMin = 0;
             m_stRect.yMax = m_iLastLine;
         }
-        else
-        {
+        else {
             m_stRect.yMin = m_iNewLine;
             m_stRect.yMax = m_iLastLine;
         }
@@ -44,17 +42,13 @@ uint8_t PAINT::run()
         Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &m_stRect,
                                         l_uint16tulValue);
     }
-    else
-    {
+    else {
         m_iNewLine = m_iLastLine + m_iLines;
 
-        if (m_iNewLine > 128)
-        {
+        if (m_iNewLine > 128) {
             m_stRect.yMin = m_iLastLine;
             m_stRect.yMax = 127;
-        }
-        else
-        {
+        } else {
             m_stRect.yMin = m_iLastLine;
             m_stRect.yMax = m_iNewLine;
         }
@@ -66,7 +60,6 @@ uint8_t PAINT::run()
     }
 
     m_iLastLine = m_iNewLine; //- saving new LastLine
-
 }
 
 uint8_t PAINT::setup()
@@ -74,8 +67,9 @@ uint8_t PAINT::setup()
   m_iLastLine = 64; //middle of LCD
 }
 
-uint8_t PAINT::readMessage(st_Message * l_stNewMessage)
+uint8_t PAINT::readMessage(st_Message *l_stNewMessage)
 {
     m_iLines = l_stNewMessage->std_u16IntData;
     m_bColor = l_stNewMessage->std_bBoolData;
+    m_bRunFlag = 1;
 }

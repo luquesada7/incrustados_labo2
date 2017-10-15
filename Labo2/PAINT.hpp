@@ -19,27 +19,23 @@
 
 /* Variables globales del programa */
 extern st_Node *g_pLinkedList;
-extern uint8_t g_aSendMessageFlag[NUMBER_OF_SLOTS];
-extern uint8_t g_aExecuteNextFrame[NUMBER_OF_SLOTS];
 extern Task * g_aTaskPointers[NUMBER_OF_SLOTS];
 
 class PAINT : public Task
 {
-    public:
-        PAINT(void);
-        uint8_t m_u8MyTaskID; // - My TaskID
-        virtual uint8_t run(void);
-        virtual uint8_t setup(void);
-        virtual uint8_t readMessage(st_Message * l_stNewMessage);
-		virtual uint8_t sendMessage(st_Message * l_stNewMessage);
-    protected:
-        int m_iLastLine;
-        int m_iLines;
-        int m_iNewLine;
-        bool m_bColor;
-        Graphics_Rectangle m_stRect;
-    private:
+  public:
+    PAINT(void);
+    virtual uint8_t run(void);
+    virtual uint8_t setup(void);
+    virtual uint8_t readMessage(st_Message * l_stNewMessage);
+    virtual uint8_t sendMessage(st_Message * l_stNewMessage);
+  protected:
+    int m_iLastLine;
+    int m_iLines;
+    int m_iNewLine;
+    bool m_bColor;
+    Graphics_Rectangle m_stRect;
+  private:
 };
-
 
 #endif /* PAINT_HPP_ */

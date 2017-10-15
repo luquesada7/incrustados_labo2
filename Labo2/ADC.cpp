@@ -15,16 +15,16 @@
 
 ADC::ADC()
 {
-    //m_u8MyTaskID = 0;
-    //m_u8NextTaskID = 1;
+    m_pKey = "ADC";
+    m_stMssg->std_pDestKey = "PAINT";
 }
 
 uint8_t ADC::run()
 {
     m_fPastADC14Resultz = m_fADC14Resultz; // -saving last value
 
-    //ADC14->CLRIFGR0 =  ADC14_CLRIFGR0_CLRIFG1
-    //                | ADC14_CLRIFGR0_CLRIFG2 | ADC14_CLRIFGR0_CLRIFG3;
+    // ADC14->CLRIFGR0 =  ADC14_CLRIFGR0_CLRIFG1
+    //                 | ADC14_CLRIFGR0_CLRIFG2 | ADC14_CLRIFGR0_CLRIFG3;
     ADC14->CTL0 = ADC14->CTL0 | ADC14_CTL0_SC; // Start
     P2->OUT ^= BIT6;
 
@@ -64,7 +64,10 @@ uint8_t ADC::setup()
 
 }
 
-uint8_t PAINT::sendMessage(st_Message * l_stNewMessage)
+uint8_t PAINT::sendMessage(st_Message *l_stNewMessage)
 {
-    l_stNewMessage->std_fFloatData = m_fADC14Resultz;
+    m_stMssg->std_fFloatData = m_fADC14Resultz;
+
+    l_stNewMessage = m_stMssg;
+    m_bMssgFlag = 0;
 }

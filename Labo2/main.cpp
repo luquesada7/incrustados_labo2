@@ -17,9 +17,7 @@ uint8_t Task::m_u8NextTaskID = 0; // - Init task ID
 volatile static uint64_t g_SystemTicks = 0; // - The system counter.
 Scheduler g_MainScheduler; // - Instantiate a Scheduler
 st_Node *g_pLinkedList = NULL;
-uint8_t g_aSendMessageFlag[NUMBER_OF_SLOTS] = {0};
-uint8_t g_aExecuteNextFrame[NUMBER_OF_SLOTS] = {0};
-Task * g_aTaskPointers[NUMBER_OF_SLOTS] = {(uintptr_t) 0};
+Task *g_aTaskPointers[NUMBER_OF_SLOTS] = {NULL};
 
 // #########################
 //          MAIN
@@ -171,35 +169,37 @@ void Setup(void)
 
 extern "C"
 {
-    // - Handle the Timer32 Interrupt
-	void T32_INT1_IRQHandler(void)
-	{
-		TIMER32_1->INTCLR = 0U;
-		P1->OUT ^= BIT0; // - Toggle the heart beat indicator (1ms)
-		g_SystemTicks++;
-		return;
-	}
+  // - Handle the Timer32 Interrupt
+  void T32_INT1_IRQHandler(void)
+  {
+    __disable_irq();
+    TIMER32_1->INTCLR = 0U;
+    P1->OUT ^= BIT0; // - Toggle the heart beat indicator (1ms)
+    g_SystemTicks++;
+    __enable_irq();
+    return;
+  }
 
-	void ADC14_IRQHandler(void)
-    {
-        __disable_irq();
-        P5->OUT ^= BIT6;
-        m_fADC14Resultz = ADC14->MEM[1];
-        m_fADC14Resulty = ADC14->MEM[2];
-        m_fADC14Resultx = ADC14->MEM[3];
-        ADC14->CLRIFGR0 =  ADC14_CLRIFGR0_CLRIFG1
-                | ADC14_CLRIFGR0_CLRIFG2 | ADC14_CLRIFGR0_CLRIFG3;
+  // - Handles new data in the ADC
+  void ADC14_IRQHandler(void)
+  {
+    __disable_irq();
+    P5->OUT ^= BIT6;
+    m_fADC14Resultz = ADC14->MEM[1];
+    m_fADC14Resulty = ADC14->MEM[2];
+    m_fADC14Resultx = ADC14->MEM[3];
+    ADC14->CLRIFGR0 = ADC14_CLRIFGR0_CLRIFG1 | ADC14_CLRIFGR0_CLRIFG2
+                    | ADC14_CLRIFGR0_CLRIFG3;
 
-        if(abs(m_fPastADC14Resultz-m_fADC14Resultz)>= 50.0)
-        {
-        //- Flag of Next Task that should be executed if dADCz is big enough
-        g_aExecuteNextFrame[m_u8NextTaskID] = 1;
+    if (abs(m_fPastADC14Resultz-m_fADC14Resultz)>= 50.0) {
+      //- Flag of Next Task that should be executed if dADCz is big enough
+      g_aExecuteNextFrame[m_u8NextTaskID] = 1;
 
-        //- Flag to tell the Scheduler the Task wants to send a message
-        g_aSendMessageFlag[m_u8MyTaskID] = 1;
-        }
-        __enable_irq();
-        return;
+      //- Flag to tell the Scheduler the Task wants to send a message
+      g_aSendMessageFlag[m_u8MyTaskID] = 1;
+    }
+    __enable_irq();
+    return;
     }
 
 }

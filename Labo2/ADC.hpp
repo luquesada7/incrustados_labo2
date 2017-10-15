@@ -27,25 +27,17 @@
 
 /* Variables globales del programa */
 extern st_Node *g_pLinkedList;
-extern uint8_t g_aSendMessageFlag[NUMBER_OF_SLOTS];
-extern uint8_t g_aExecuteNextFrame[NUMBER_OF_SLOTS];
 extern Task * g_aTaskPointers[NUMBER_OF_SLOTS];
 
 class ADC: public Task
 {
-    public:
+  public:
     ADC(void);
-    uint8_t m_u8MyTaskID; // - My TaskID
-    uint8_t m_u8NextTaskID; // - Next Task to be executed
-    uint16_t m_fADC14Resultx;
-    uint16_t m_fADC14Resulty;
     uint16_t m_fADC14Resultz;
-    uint16_t m_fPastADC14Resultx;
-    uint16_t m_fPastADC14Resulty;
     uint16_t m_fPastADC14Resultz;
     virtual uint8_t run(void);
     virtual uint8_t setup(void);
-	virtual uint8_t sendMessage(st_Message * l_stNewMessage);
+    virtual uint8_t sendMessage(st_Message * l_stNewMessage);
   protected:
   private:
 };

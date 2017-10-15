@@ -6,8 +6,7 @@ Scheduler::Scheduler()
     m_u8OpenSlots = static_cast<uint8_t>(NUMBER_OF_SLOTS);
     m_u8NextSlot = 0;
     m_u8TaskCounter = 0;
-    for(int index1 = 0; index1 < NUMBER_OF_SLOTS; index1++)
-    {
+    for (int index1 = 0; index1 < NUMBER_OF_SLOTS; index1++) {
         m_aSchedule[index1].pToAttach = (uintptr_t) 0; // Init to an invalid pointer
     }
     return;
@@ -18,27 +17,24 @@ Scheduler::Scheduler()
 // task into the schedule slots
 // ##############################################
 
-uint8_t Scheduler::attach(Task * i_ToAttach, uint64_t i_u64TickInterval)
+uint8_t Scheduler::attach(Task *i_ToAttach, uint64_t i_u64TickInterval)
 {
     uint8_t l_ErrorCode = NO_ERR;
     st_TaskInfo l_st_StructToAttach;
 
     l_st_StructToAttach.pToAttach = i_ToAttach;
+    l_st_StructToAttach.pToKey = i_ToAttach->getKey();
     l_st_StructToAttach.u64ticks = this->m_u64ticks;
     l_st_StructToAttach.u64TickInterval = 0;
 	l_st_StructToAttach.u64TickIntervalInitValue = i_u64TickInterval;
 
-    if((m_u8OpenSlots>0) && (m_u8NextSlot < NUMBER_OF_SLOTS) && (m_u8TaskCounter < NUMBER_OF_SLOTS))
-    {
+    if((m_u8OpenSlots>0) && (m_u8NextSlot < NUMBER_OF_SLOTS)) {
         m_aSchedule[m_u8NextSlot] =  l_st_StructToAttach;
         m_u8OpenSlots--;
         m_u8NextSlot++;
-        g_aTaskPointers[m_u8TaskCounter] = i_ToAttach;
-        m_aTaskInfoStructs[m_u8TaskCounter] = l_st_StructToAttach;
-        m_u8TaskCounter++;
-    }
-    else
-    {
+        g_aTaskPointers[m_u8NextSlot] = i_ToAttach;
+        m_aTaskInfoStructs[m_u8NextSlot] = l_st_StructToAttach;
+    } else {
         l_ErrorCode = RET_ERR;
     }
     return l_ErrorCode;
@@ -51,31 +47,31 @@ uint8_t Scheduler::attach(Task * i_ToAttach, uint64_t i_u64TickInterval)
 uint8_t Scheduler::run(void)
 {
     int l_iNextTaskSlot = 0U;
-    Task * l_pNextTask = (uintptr_t) 0;
+    Task *l_pNextTask = NULL;
     uint8_t l_u8ReturnCode = NO_ERR;
 
-    while(l_iNextTaskSlot < NUMBER_OF_SLOTS)
-    {
-    	l_pNextTask = static_cast<Task *> (m_aSchedule[l_iNextTaskSlot].pToAttach);
-		if(l_pNextTask != ((uintptr_t) 0))
-		{
-			if(m_aSchedule[l_iNextTaskSlot].u64TickInterval == 0){
-				l_pNextTask->run();
-			}
-			m_aSchedule[l_iNextTaskSlot].u64TickInterval ++;
+    while (l_iNextTaskSlot < NUMBER_OF_SLOTS) {
+      l_pNextTask = static_cast<Task *> (m_aSchedule[l_iNextTaskSlot].pToAttach);
 
-			if(m_aSchedule[l_iNextTaskSlot].u64TickInterval > m_aSchedule[l_iNextTaskSlot].u64TickIntervalInitValue) {
-				m_aSchedule[l_iNextTaskSlot].u64TickInterval = 0;
-			}
-		}
-		l_iNextTaskSlot++;
+      if (l_pNextTask != NULL) {
+        if (m_aSchedule[l_iNextTaskSlot].u64TickInterval == 0) {
+          l_pNextTask->run();
+        }
+        m_aSchedule[l_iNextTaskSlot].u64TickInterval ++;
+
+        if (m_aSchedule[l_iNextTaskSlot].u64TickInterval > m_aSchedule[l_iNextTaskSlot].u64TickIntervalInitValue) {
+          m_aSchedule[l_iNextTaskSlot].u64TickInterval = 0;
+        }
+      }
+
+      l_iNextTaskSlot++;
     }
     CollectMessages();
     DistributeMessages();
     CalculateNextSchedule();
 
-    //TODO: m_aSchedule = m_aNextSchedule
-    //      Ressolve TaskID
+    // TODO: m_aSchedule = m_aNextSchedule
+    //       Ressolve TaskID
 
     return l_u8ReturnCode;
 }
@@ -87,38 +83,41 @@ uint8_t Scheduler::run(void)
 uint8_t Scheduler::setup(void)
 {
     int l_iNextTaskSlot = 0U;
-    Task * l_pNextTask = (uintptr_t) 0;
+    Task *l_pNextTask = NULL;
     uint8_t l_u8ReturnCode = NO_ERR;
 
-    while(l_iNextTaskSlot < NUMBER_OF_SLOTS)
-    {
+    while (l_iNextTaskSlot < NUMBER_OF_SLOTS) {
         l_pNextTask = static_cast<Task *> (m_aSchedule[l_iNextTaskSlot].pToAttach);
-        if(l_pNextTask != ((uintptr_t) 0))
-        {
+        if (l_pNextTask != ((uintptr_t) 0)) {
             l_pNextTask->setup();
         }
         l_iNextTaskSlot++;
     }
+
     return l_u8ReturnCode;
 }
 
 uint8_t Scheduler::CalculateNextSchedule(void)
 {
-    Task * l_pTaskPointer = (unintptr_t)0;
+    Task * l_pNextTask = NULL;
     uint8_t l_u8Schedule = 0;
+    char *l_pKey = NULL;
+    st_TaskInfo l_st_StructToAdd;
 
-    for(int index1 = 0; index1 < NUMBER_OF_SLOTS; index1++)
-    {
-        m_aNextSchedule[index1].pToAttach = (uintptr_t) 0; // Init to an invalid pointer
-    }
+    memset(m_aSchedule, 0, NUMBER_OF_SLOTS*sizeof(struct st_TaskInfo));
 
-    for(int l_iCounter; l_iCounter < NUMBER_OF_SLOTS; l_iCounter++)
-    {
-        if(g_aExecuteNextFrame[l_iCounter] == 1 && l_u8Schedule < NUMBER_OF_SLOTS)
-        {
-            l_st_StructToAttach = m_aTaskInfoStructs[l_iCounter];
-            m_aNextSchedule[l_u8Schedule] = l_st_StructToAttach;
-            l_u8Schedule++;
+
+    for (int l_iCounter = 0; l_iCounter < NUMBER_OF_SLOTS; l_iCounter++) {
+        l_pNextTask = g_aTaskPointers[l_iCounter];
+        if (l_pNextTask->getRunFlag()) {
+            l_pKey = l_pNextTask.getKey();
+            for(int l_iCounter = 0; l_iCounter < NUMBER_OF_SLOTS; l_iCounter++){
+                l_st_StructToAdd = m_aTaskInfoStructs[l_iCounter];
+                if(l_st_StructToAdd.pToKey == l_pKey){
+                    m_aSchedule[l_u8Schedule] = l_st_StructToAdd;
+                    l_u8Schedule++;
+                }
+            }
         }
     }
     return(NO_ERR);
@@ -126,13 +125,12 @@ uint8_t Scheduler::CalculateNextSchedule(void)
 
 uint8_t Scheduler::CollectMessages(void)
 {
-    Task * l_pNextSender = (uintptr_t)0;
+    Task *l_pNextSender = NULL;
 
-    for(int l_iCounter; l_iCounter < NUMBER_OF_SLOTS; l_iCounter++)
-    {
-        if(g_aSendMessageFlag[l_iCounter] == 1){
+    for(int l_iCounter; l_iCounter < NUMBER_OF_SLOTS; l_iCounter++) {
+        l_pNextSender = g_aTaskPointers[l_iCounter];
+        if (l_pNextSender->getMssgFlag()) {
             st_Message l_stNewMessage;
-            l_pNextSender = g_aTaskPointers[l_iCounter];
             l_pNextSender->sendMessage(&l_stNewMessage);
             InsertNode(g_pLinkedList, l_stNewMessage);
         }
@@ -143,9 +141,9 @@ uint8_t Scheduler::CollectMessages(void)
 uint8_t Scheduler::DistributeMessages(void)
 {
     st_Message l_stNewMessage;
-    while(g_pLinkedList != NULL)
-    {
-        DistributeEraseFirstNode(g_pLinkedList, l_stNewMessage);
+
+    while(g_pLinkedList != NULL) {
+            DistributeEraseFirstNode(g_pLinkedList, l_stNewMessage);
     }
     return(NO_ERR);
 }
@@ -164,23 +162,8 @@ uint8_t Scheduler::InsertNode(st_Node *&l_pLinkedList, st_Message l_stNewMessage
     l_stNewNode->std_stMssg = l_stNewMessage;
 
     st_Node *l_stAux1 = l_pLinkedList;
-    st_Node *l_stAux2;
 
-    // -while list is not empty and DestTaskID of first node is smaller than the new message DestTaskID
-    while((l_stAux1 != NULL) && (l_stAux1->std_stMssg.std_u8DestTaskID < l_stNewMessage.std_u8DestTaskID))
-    {
-        l_stAux2 = l_stAux1; //- points to first node
-        l_stAux1 = l_stAux1->std_pnext; //- new position
-    }
-
-    if(l_pLinkedList == l_stAux1)
-    {
-        l_pLinkedList = l_stNewNode; //- adding node at the beggining of the list
-    }else
-    {
-        l_stAux2->std_pnext = l_stNewNode; // -adding node in the middle or back of the list
-    }
-
+    l_pLinkedList = l_stNewNode; // -adding node at the beginning of the list
     l_stNewNode->std_pnext = l_stAux1;
 
     return(NO_ERR);
@@ -200,10 +183,29 @@ uint8_t Scheduler::DistributeEraseFirstNode(st_Node *&l_pLinkedList, st_Message 
 {
     st_Node *l_stAux = l_pLinkedList;
     l_stMessage = l_stAux->std_stMssg;
-    Task * l_pTaskPointer = (uintptr_t)0;
-    l_pTaskPointer = g_aTaskPointers[l_stMessage.std_u8DestTaskID];
-    l_pTaskPointer->readMessage(l_stMessage);
+    char *l_pKey = l_stMessage.std_pDestKey;
+    Task *l_pTaskPointer = NULL;
+
+    for(int l_iCounter = 0; l_iCounter < NUMBER_OF_SLOTS; l_iCounter++){
+        l_pTaskPointer = g_aTaskPointers[l_iCounter];
+        if(l_pTaskPointer->getKey() == l_pKey){
+            l_pTaskPointer->readMessage(l_stMessage);
+        }
+    }
     l_pLinkedList = l_stAux->std_pnext;
     delete l_stAux;
+
     return(NO_ERR);
 }
+
+
+// distribute_messages {
+//   while(next != NULL) {
+//     msg.key
+//
+//     iterate_over_slots
+//     if (slot.key = msg.key) {
+//       task.readMessage(msg);
+//     }
+//   }
+// }

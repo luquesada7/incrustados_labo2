@@ -18,21 +18,21 @@ PIX::PIX()
 {
   const float l_fPixDelta = 55;
   const int l_iPixLine = 128;
-  m_u8MyTaskID = 1;
-  m_u8NextTaskID = 2; // - When finished execute Task 2 = PAINT
+  m_pKey = "PIX";
+  m_stMssg.std_pDestKey = "PAINT";
 }
 
 uint8_t PIX::run()
 {
+    m_bRunFlag = 0;
   //################################
   // Selecting color to paint pixels
   // - false = blue
   // - true = brown
   //################################
-  if(m_fNewZ > m_fPastZ)
-  {
+  if(m_fNewZ > m_fPastZ) {
       m_bColor = true;
-  }else{
+  } else{
       m_bColor = false;
   }
 
@@ -44,11 +44,7 @@ uint8_t PIX::run()
   m_iLines = 1 + ((m_fDelta*l_fPixDelta - l_iPixLine)/l_iPixLine);
   m_fPastZ = m_fNewZ; //- saving new m_fPastZ
 
-  //- Flag to tell the Scheduler the Task wants to send a message
-  g_aSendMessageFlag[m_u8MyTaskID] = 1;
-
-  //- Flag of Next Task that should be executed
-  g_aExecuteNextFrame[m_u8NextTaskID] = 1;
+  m_
 }
 
 uint8_t PIX::setup()
@@ -56,13 +52,17 @@ uint8_t PIX::setup()
   m_fPastZ = 8000;//Falta calcular
 }
 
-uint8_t PAINT::readMessage(st_Message * l_stNewMessage)
+uint8_t PAINT::readMessage(st_Message *l_stNewMessage)
 {
     m_fNewZ = l_stNewMessage->std_fFloatData;
+    m_bRunFlag = 1;
 }
 
-uint8_t PAINT::sendMessage(st_Message * l_stNewMessage)
+uint8_t PAINT::sendMessage(st_Message *l_stNewMessage)
 {
-    l_stNewMessage->std_bBoolData = m_bColor;
-    l_stNewMessage->std_u16IntData = m_iLines;
+    m_stMssg->std_bBoolData = m_bColor;
+    m_stMssg->std_u16IntData = m_iLines;
+
+    l_stNewMessage = m_stMssg;
+    m_bMssgFlag = 0;
 }
