@@ -2,8 +2,8 @@
  * Strct.hpp
  *
  *  Created on: Oct 13, 2017
- *      Authors: Jose Pablo Martinez &
-                 Luisa Fernanda Quesada
+ *      Authors: Luisa Fernanda Quesada &
+ *               Jose Pablo Martinez
  */
 
 #ifndef STRCT_HPP_
