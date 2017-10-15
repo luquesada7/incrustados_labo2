@@ -9,6 +9,7 @@
 #define TASKS_SCHEDULER_HPP_
 #include <ti/devices/msp432p4xx/inc/msp.h>
 #include "Task.hpp"
+#include "Strct.hpp"
 
 #define NUMBER_OF_SLOTS 255
 #define NULL            0
@@ -19,16 +20,10 @@ struct st_TaskInfo {
 	uint64_t u64TickInterval; // - How often the task is executed
 	uint64_t u64ticks; // - Current tick count
 	uint64_t u64TickIntervalInitValue; // - Value to reset
+	char *pToKey;
 };
 
 
-struct st_MailBox {
-    uint64_t u64DestTaskID;
-    uint64_t u64SrcTaskID;
-    int*     pToMessage;
-    Task *   pToAttach;
-
-};
 
 class Scheduler
 {
@@ -45,6 +40,11 @@ private:
     st_TaskInfo m_aNextSchedule[NUMBER_OF_SLOTS]; // - Next schedule to be executed (not implemented)
     uint8_t CalculateNextSchedule(void); // - Calculate next schedule tasks (not implemented)
     uint8_t SortScheduleByPriority(Task * i_pSchedule); // - Sorts a schedule based on priority (not implemented)
+    uint8_t CollectMessages(void); // - Collects al messages from Tasks
+    uint8_t DistributeMessages(void); // - Distributes messages between Tasks
+    uint8_t InsertNode(st_Node *&st_pLinkedList, st_Message l_stNewMessage); // - Inserts node to linked list with mail
+    uint8_t DistributeEraseFirstNode(st_Node *&st_pLinkedList, st_Message &l_stMessage); // - Erases first node of linked list
+    st_Node *g_pLinkedList;
 };
 
 

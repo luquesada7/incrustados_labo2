@@ -18,6 +18,7 @@ uint8_t Scheduler::attach(Task * i_ToAttach, uint64_t i_u64TickInterval)
     st_TaskInfo l_st_StructToAttach;
 
     l_st_StructToAttach.pToAttach = i_ToAttach;
+    l_st_StructToAttach.pToKey = i_ToAttach->getKey();
     l_st_StructToAttach.u64ticks = this->m_u64ticks;
     l_st_StructToAttach.u64TickInterval = 0;
 	l_st_StructToAttach.u64TickIntervalInitValue = i_u64TickInterval;

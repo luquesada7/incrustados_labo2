@@ -3,6 +3,8 @@
 LED::LED(uint16_t i_BITN)
 {
 	m_u16BITN = i_BITN;
+	m_pKey = "LED";
+	//this->setKey("LED");
 }
 
 uint8_t LED::run()

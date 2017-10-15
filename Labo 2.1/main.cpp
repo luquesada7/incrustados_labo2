@@ -4,11 +4,16 @@
 #include "Task.hpp"
 #include "LED.hpp"
 #include "ADC.hpp"
+#include "Strct.hpp"
+#include <stdio.h>
 
 
 uint16_t ADC14Resultx = 0U;
 uint16_t ADC14Resulty = 0U;
 uint16_t ADC14Resultz = 0U;
+
+uint16_t *pToAx = &ADC14Resultx;
+uint16_t datapToAx = *pToAx;
 
 // ##########################
 // Global/Static declarations
@@ -25,18 +30,34 @@ Scheduler g_MainScheduler; // - Instantiate a Scheduler
 void main(void)
 {
 
+    P2->DIR |= BIT0 + BIT1; //Red LED
     // - Instantiate two new Tasks
-    LED BlueLED(BIT0);
+    LED BlueLED(BIT2);
     LED GreenLED(BIT1);
-    ADC TestADC(0);
+
+    BlueLED.setKey("TAREA1");
+    GreenLED.setKey("TAREA2");
+    //Task *pointer = (&GreenLED);
+
+    if ("TAREA2" == (&GreenLED)->getKey())
+    {
+        P2->OUT =BIT0;
+    }else{
+        P2->OUT =BIT1;
+    }
+
+
+    //ADC TestADC(0);
     // - Run the overall setup function for the system
-    Setup();
-    // - Attach the Tasks to the Scheduler;
-    g_MainScheduler.attach(&BlueLED, 500);
-    g_MainScheduler.attach(&GreenLED, 500);
-    g_MainScheduler.attach(&TestADC, 0);
+    //Setup();
+    //- Attach the Tasks to the Scheduler;
+    //g_MainScheduler.attach(&BlueLED, 500);
+    //g_MainScheduler.attach(&GreenLED, 500);
+    //g_MainScheduler.attach(&TestADC, 0);
+
     // - Run the Setup for the scheduler and all tasks
     g_MainScheduler.setup();
+
     // - Main Loop
     while(1)
     {

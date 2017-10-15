@@ -132,7 +132,7 @@ uint8_t Scheduler::CollectMessages(void)
         if (l_pNextSender->getMssgFlag()) {
             st_Message l_stNewMessage;
             l_pNextSender->sendMessage(&l_stNewMessage);
-            InsertNode(g_pLinkedList, l_stNewMessage);
+            InsertNode(m_pLinkedList, l_stNewMessage);
         }
     }
     return(NO_ERR);
@@ -142,8 +142,8 @@ uint8_t Scheduler::DistributeMessages(void)
 {
     st_Message l_stNewMessage;
 
-    while(g_pLinkedList != NULL) {
-            DistributeEraseFirstNode(g_pLinkedList, l_stNewMessage);
+    while(m_pLinkedList != NULL) {
+            DistributeEraseFirstNode(m_pLinkedList, l_stNewMessage);
     }
     return(NO_ERR);
 }
@@ -197,15 +197,3 @@ uint8_t Scheduler::DistributeEraseFirstNode(st_Node *&l_pLinkedList, st_Message 
 
     return(NO_ERR);
 }
-
-
-// distribute_messages {
-//   while(next != NULL) {
-//     msg.key
-//
-//     iterate_over_slots
-//     if (slot.key = msg.key) {
-//       task.readMessage(msg);
-//     }
-//   }
-// }
