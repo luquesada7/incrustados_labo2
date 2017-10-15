@@ -51,7 +51,7 @@ uint8_t Scheduler::run(void)
 			}
 			m_aSchedule[l_iNextTaskSlot].u64TickInterval ++;
 
-			if(m_aSchedule[l_iNextTaskSlot].u64TickInterval > m_aSchedule[l_iNextTaskSlot].u64TickIntervalInitValue) {
+			if(m_aSchedule[l_iNextTaskSlot].u64TickInterval >= m_aSchedule[l_iNextTaskSlot].u64TickIntervalInitValue) {
 				m_aSchedule[l_iNextTaskSlot].u64TickInterval = 0;
 			}
 		}

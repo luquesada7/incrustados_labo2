@@ -13,6 +13,7 @@ uint16_t ADC14Resultz = 0U;
 // ##########################
 // Global/Static declarations
 // ##########################
+
 uint8_t Task::m_u8NextTaskID = 0; // - Init task ID
 volatile static uint64_t g_SystemTicks = 0; // - The system counter.
 Scheduler g_MainScheduler; // - Instantiate a Scheduler
@@ -20,19 +21,20 @@ Scheduler g_MainScheduler; // - Instantiate a Scheduler
 // #########################
 //          MAIN
 // #########################
+
 void main(void)
 {
 
     // - Instantiate two new Tasks
-    LED BlueLED(BIT2);
+    LED BlueLED(BIT0);
     LED GreenLED(BIT1);
-    ADC TestADC(1,2,3);
+    ADC TestADC(0);
     // - Run the overall setup function for the system
     Setup();
     // - Attach the Tasks to the Scheduler;
     g_MainScheduler.attach(&BlueLED, 500);
-    g_MainScheduler.attach(&GreenLED, 300);
-    g_MainScheduler.attach(&TestADC, 10);
+    g_MainScheduler.attach(&GreenLED, 500);
+    g_MainScheduler.attach(&TestADC, 0);
     // - Run the Setup for the scheduler and all tasks
     g_MainScheduler.setup();
     // - Main Loop
@@ -53,10 +55,9 @@ void main(void)
 // @input - none
 // @output - none
 // **********************************
+
 void Setup(void)
 {
-    P5->DIR = BIT6;
-    P5->OUT = BIT6;
 	// ****************************
 	//         DEVICE CONFIG
 	// ****************************
@@ -77,13 +78,16 @@ void Setup(void)
 	// - Enable the interrupt in the NVIC
 	// - Start the timer in UP mode.
 	// - Re-enable interrupts
+
 	TIMER32_1->LOAD = TIMER32_COUNT; //~1ms ---> a 3Mhz
 	TIMER32_1->CONTROL = TIMER32_CONTROL_SIZE | TIMER32_CONTROL_PRESCALE_0 | TIMER32_CONTROL_MODE | TIMER32_CONTROL_IE | TIMER32_CONTROL_ENABLE;
+
 	NVIC_SetPriority(T32_INT1_IRQn,1);
 	NVIC_EnableIRQ(T32_INT1_IRQn);
 
-	NVIC_SetPriority(ADC14_IRQn, 1);
+	NVIC_SetPriority(ADC14_IRQn, 2);
 	NVIC_EnableIRQ(ADC14_IRQn);
+
 	__enable_irq();
 
 	return;
@@ -100,10 +104,10 @@ extern "C"
 		return;
 	}
 
+	// - Handle the ADC14 Interrupt
 	void ADC14_IRQHandler(void)
     {
         __disable_irq();
-        P5->OUT ^= BIT6;
         ADC14Resultz = ADC14->MEM[1];
         ADC14Resulty = ADC14->MEM[2];
         ADC14Resultx = ADC14->MEM[3];

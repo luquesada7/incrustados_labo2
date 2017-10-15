@@ -21,15 +21,12 @@
 #include <C:/ti/simplelink_msp432_sdk_1_40_01_00/source/ti/grlib/grlib.h>
 #include "Task.hpp"
 
-class ADC: public Task
+class ADC : public Task
 {
-    public:
-    ADC(uint16_t, uint16_t, uint16_t);
-    virtual uint8_t run(void);
-    virtual uint8_t setup(void);
-    uint16_t ADC14Resultx;
-    uint16_t ADC14Resulty;
-    uint16_t ADC14Resultz;
+  public:
+        ADC(uint16_t);
+        virtual uint8_t run(void);
+        virtual uint8_t setup(void);
   protected:
   private:
 };

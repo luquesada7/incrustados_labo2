@@ -13,26 +13,22 @@
  */
 #include "ADC.hpp"
 
-ADC::ADC(uint16_t Ax, uint16_t Ay, uint16_t Az)
+ADC::ADC(uint16_t)
 {
-    ADC14Resultx = Ax;
-    ADC14Resulty = Ay;
-    ADC14Resultz = Az;
-}
+};
 
 uint8_t ADC::run()
 {
-    //ADC14->CLRIFGR0 =  ADC14_CLRIFGR0_CLRIFG1
-    //                | ADC14_CLRIFGR0_CLRIFG2 | ADC14_CLRIFGR0_CLRIFG3;
+
     ADC14->CTL0 = ADC14->CTL0 | ADC14_CTL0_SC; // Start
     P2->OUT ^= BIT6;
     return (NO_ERR);
-}
+};
 
 uint8_t ADC::setup()
 {
-    P2->DIR = BIT6;
-    P2->OUT = BIT6;
+    P2->DIR |= BIT6;
+    P2->OUT &= BIT6;
     // ****************************
     //         ADC CONFIG
     // ****************************
@@ -48,17 +44,13 @@ uint8_t ADC::setup()
     // - Memory MCTL[0]-MCTL[2] for x, y, z accelerometer measurements
     //
 
-    ADC14->MCTL[0] = ADC14_MCTLN_INCH_11 | ADC14_MCTLN_VRSEL_0;
-    ADC14->MCTL[1] = ADC14_MCTLN_INCH_13 | ADC14_MCTLN_VRSEL_0;
-    ADC14->MCTL[2] = ADC14_MCTLN_INCH_14 | ADC14_MCTLN_VRSEL_0;
+    ADC14->MCTL[1] = ADC14_MCTLN_INCH_11 | ADC14_MCTLN_VRSEL_0;
+    ADC14->MCTL[2] = ADC14_MCTLN_INCH_13 | ADC14_MCTLN_VRSEL_0;
+    ADC14->MCTL[3] = ADC14_MCTLN_INCH_14 | ADC14_MCTLN_VRSEL_0;
 
     // ****************************
     //       INTERRUPT ENABLE
     // ****************************
     ADC14->CTL0 = ADC14->CTL0 | ADC14_CTL0_ENC;
     ADC14->IER0 = ADC14_IER0_IE1 | ADC14_IER0_IE2 | ADC14_IER0_IE3;
-
-    return (NO_ERR);
-
-}
-
+};
