@@ -43,8 +43,6 @@ uint8_t PIX::run()
   m_fDelta = abs(m_fNewZ- m_fPastZ);
   m_iLines = 1 + ((m_fDelta*l_fPixDelta - l_iPixLine)/l_iPixLine);
   m_fPastZ = m_fNewZ; //- saving new m_fPastZ
-
-  m_
 }
 
 uint8_t PIX::setup()
