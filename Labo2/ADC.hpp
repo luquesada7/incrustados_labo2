@@ -8,8 +8,8 @@
  * ADC interrupt: Send a message to Task 2 with ADCResultx, ADCResulty, ADCResultz
  *
  * Created on: Oct 6, 2017
- * Authors: Luisa Fernanda Quesada Camacho &
- *          Jose Pablo Martinez Hernandez
+ * Authors: Jose Pablo Martinez Hernandez &
+ *          Luisa Fernanda Quesada Camacho
  */
 
 
@@ -20,24 +20,13 @@
 #include <C:/ti/simplelink_msp432_sdk_1_40_01_00/source/ti/devices/msp432p4xx/driverlib/driverlib.h>
 #include <C:/ti/simplelink_msp432_sdk_1_40_01_00/source/ti/grlib/grlib.h>
 #include "Task.hpp"
-#include "Strct.hpp"
 
-#define NUMBER_OF_SLOTS 255
-#define NULL            0
-
-/* Variables globales del programa */
-extern st_Node *g_pLinkedList;
-extern Task * g_aTaskPointers[NUMBER_OF_SLOTS];
-
-class ADC: public Task
+class ADC : public Task
 {
   public:
-    ADC(void);
-    uint16_t m_fADC14Resultz;
-    uint16_t m_fPastADC14Resultz;
-    virtual uint8_t run(void);
-    virtual uint8_t setup(void);
-    virtual uint8_t sendMessage(st_Message * l_stNewMessage);
+        ADC(uint16_t);
+        virtual uint8_t run(void);
+        virtual uint8_t setup(void);
   protected:
   private:
 };

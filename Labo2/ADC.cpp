@@ -8,33 +8,27 @@
  * ADC interrupt: Send a message to Task 2 with ADCResultx, ADCResulty, ADCResultz
  *
  * Created on: Oct 6, 2017
- * Authors: Luisa Fernanda Quesada Camacho &
- *          Jose Pablo Martinez Hernandez
+ * Authors: Luisa Fernanda Quesada &
+ *          Jose Pablo Martinez
  */
 #include "ADC.hpp"
 
-ADC::ADC()
+ADC::ADC(uint16_t)
 {
-    m_pKey = "ADC";
-    m_stMssg->std_pDestKey = "PAINT";
-}
+};
 
 uint8_t ADC::run()
 {
-    m_fPastADC14Resultz = m_fADC14Resultz; // -saving last value
 
-    // ADC14->CLRIFGR0 =  ADC14_CLRIFGR0_CLRIFG1
-    //                 | ADC14_CLRIFGR0_CLRIFG2 | ADC14_CLRIFGR0_CLRIFG3;
     ADC14->CTL0 = ADC14->CTL0 | ADC14_CTL0_SC; // Start
     P2->OUT ^= BIT6;
-
     return (NO_ERR);
-}
+};
 
 uint8_t ADC::setup()
 {
-    P2->DIR = BIT6;
-    P2->OUT = BIT6;
+    P2->DIR |= BIT6;
+    P2->OUT &= BIT6;
     // ****************************
     //         ADC CONFIG
     // ****************************
@@ -50,9 +44,9 @@ uint8_t ADC::setup()
     // - Memory MCTL[0]-MCTL[2] for x, y, z accelerometer measurements
     //
 
-    ADC14->MCTL[0] = ADC14_MCTLN_INCH_11 | ADC14_MCTLN_VRSEL_0;
-    ADC14->MCTL[1] = ADC14_MCTLN_INCH_13 | ADC14_MCTLN_VRSEL_0;
-    ADC14->MCTL[2] = ADC14_MCTLN_INCH_14 | ADC14_MCTLN_VRSEL_0;
+    ADC14->MCTL[1] = ADC14_MCTLN_INCH_11 | ADC14_MCTLN_VRSEL_0;
+    ADC14->MCTL[2] = ADC14_MCTLN_INCH_13 | ADC14_MCTLN_VRSEL_0;
+    ADC14->MCTL[3] = ADC14_MCTLN_INCH_14 | ADC14_MCTLN_VRSEL_0;
 
     // ****************************
     //       INTERRUPT ENABLE
@@ -61,13 +55,4 @@ uint8_t ADC::setup()
     ADC14->IER0 = ADC14_IER0_IE1 | ADC14_IER0_IE2 | ADC14_IER0_IE3;
 
     return (NO_ERR);
-
-}
-
-uint8_t PAINT::sendMessage(st_Message *l_stNewMessage)
-{
-    m_stMssg->std_fFloatData = m_fADC14Resultz;
-
-    l_stNewMessage = m_stMssg;
-    m_bMssgFlag = 0;
-}
+};

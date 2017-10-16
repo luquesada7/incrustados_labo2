@@ -5,34 +5,65 @@
 #include "LED.hpp"
 #include "ADC.hpp"
 #include "Strct.hpp"
+#include <stdio.h>
+
 
 uint16_t ADC14Resultx = 0U;
 uint16_t ADC14Resulty = 0U;
 uint16_t ADC14Resultz = 0U;
 
+uint16_t *pToAx = &ADC14Resultx;
+uint16_t datapToAx = *pToAx;
+
 // ##########################
 // Global/Static declarations
 // ##########################
+
 uint8_t Task::m_u8NextTaskID = 0; // - Init task ID
 volatile static uint64_t g_SystemTicks = 0; // - The system counter.
 Scheduler g_MainScheduler; // - Instantiate a Scheduler
-st_Node *g_pLinkedList = NULL;
-Task *g_aTaskPointers[NUMBER_OF_SLOTS] = {NULL};
 
 // #########################
 //          MAIN
 // #########################
+
 void main(void)
 {
 
+    P2->DIR |= BIT0 + BIT1 + BIT2; //Red LED
     // - Instantiate two new Tasks
-    ADC TestADC();
+    LED BlueLED(BIT2);
+    LED GreenLED(BIT1);
+
+    BlueLED.setKey("TAREA1");
+    BlueLED.setDestKey("TAREA2");
+    GreenLED.setKey("TAREA2");
+    GreenLED.setDestKey("TAREA1");
+
+    /*if ("TAREA1" == (&GreenLED)->m_stMssg.std_pDestKey)
+    {
+        P2->OUT = BIT2;
+    }
+    __delay_cycles(1000000);
+    //Task *pointer = (&GreenLED);
+
+    if ("TAREA1" == (&BlueLED)->getKey())
+    {
+        P2->OUT = BIT0;
+    }*/
+
+
+    //ADC TestADC(0);
     // - Run the overall setup function for the system
     Setup();
-    // - Attach the Tasks to the Scheduler;
-    g_MainScheduler.attach(&TestADC, 10);
+    //- Attach the Tasks to the Scheduler;
+    g_MainScheduler.attach(&BlueLED, 100);
+    g_MainScheduler.attach(&GreenLED, 200);
+    //g_MainScheduler.attach(&TestADC, 0);
+
     // - Run the Setup for the scheduler and all tasks
     g_MainScheduler.setup();
+
     // - Main Loop
     while(1)
     {
@@ -51,10 +82,9 @@ void main(void)
 // @input - none
 // @output - none
 // **********************************
+
 void Setup(void)
 {
-    P5->DIR = BIT6;
-    P5->OUT = BIT6;
 	// ****************************
 	//         DEVICE CONFIG
 	// ****************************
@@ -75,53 +105,43 @@ void Setup(void)
 	// - Enable the interrupt in the NVIC
 	// - Start the timer in UP mode.
 	// - Re-enable interrupts
+
 	TIMER32_1->LOAD = TIMER32_COUNT; //~1ms ---> a 3Mhz
 	TIMER32_1->CONTROL = TIMER32_CONTROL_SIZE | TIMER32_CONTROL_PRESCALE_0 | TIMER32_CONTROL_MODE | TIMER32_CONTROL_IE | TIMER32_CONTROL_ENABLE;
-	
+
 	NVIC_SetPriority(T32_INT1_IRQn,1);
 	NVIC_EnableIRQ(T32_INT1_IRQn);
 
-	NVIC_SetPriority(ADC14_IRQn, 1);
+	NVIC_SetPriority(ADC14_IRQn, 2);
 	NVIC_EnableIRQ(ADC14_IRQn);
-	
+
 	__enable_irq();
-	
+
 	return;
 }
 
 extern "C"
 {
-  // - Handle the Timer32 Interrupt
-  void T32_INT1_IRQHandler(void)
-  {
-    __disable_irq();
-    TIMER32_1->INTCLR = 0U;
-    P1->OUT ^= BIT0; // - Toggle the heart beat indicator (1ms)
-    g_SystemTicks++;
-    __enable_irq();
-    return;
-  }
+    // - Handle the Timer32 Interrupt
+	void T32_INT1_IRQHandler(void)
+	{
+		TIMER32_1->INTCLR = 0U;
+		P1->OUT ^= BIT0; // - Toggle the heart beat indicator (1ms)
+		g_SystemTicks++;
+		return;
+	}
 
-  // - Handles new data in the ADC
-  void ADC14_IRQHandler(void)
-  {
-    __disable_irq();
-    P5->OUT ^= BIT6;
-    m_fADC14Resultz = ADC14->MEM[1];
-    m_fADC14Resulty = ADC14->MEM[2];
-    m_fADC14Resultx = ADC14->MEM[3];
-    ADC14->CLRIFGR0 = ADC14_CLRIFGR0_CLRIFG1 | ADC14_CLRIFGR0_CLRIFG2
-                    | ADC14_CLRIFGR0_CLRIFG3;
-
-    if (abs(m_fPastADC14Resultz-m_fADC14Resultz)>= 50.0) {
-      //- Flag of Next Task that should be executed if dADCz is big enough
-      g_aExecuteNextFrame[m_u8NextTaskID] = 1;
-
-      //- Flag to tell the Scheduler the Task wants to send a message
-      g_aSendMessageFlag[m_u8MyTaskID] = 1;
-    }
-    __enable_irq();
-    return;
+	// - Handle the ADC14 Interrupt
+	void ADC14_IRQHandler(void)
+    {
+        __disable_irq();
+        ADC14Resultz = ADC14->MEM[1];
+        ADC14Resulty = ADC14->MEM[2];
+        ADC14Resultx = ADC14->MEM[3];
+        ADC14->CLRIFGR0 =  ADC14_CLRIFGR0_CLRIFG1
+                | ADC14_CLRIFGR0_CLRIFG2 | ADC14_CLRIFGR0_CLRIFG3;
+        __enable_irq();
+        return;
     }
 
 }
