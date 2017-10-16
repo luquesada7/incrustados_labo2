@@ -19,8 +19,14 @@ class LED : public Task
         uint16_t m_u16BITN;
         virtual uint8_t run(void);
         virtual uint8_t setup(void);
+        virtual uint8_t readMessage(st_Message *l_stNewMessage);
+        virtual uint8_t sendMessage(st_Message *l_stNewMessage);
+
     protected:
+        bool m_bsendTestMailbox;
+        bool m_brecievedTestMailbox;
     private:
+
 };
 
 #endif /* LED_HPP_ */

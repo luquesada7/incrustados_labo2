@@ -30,29 +30,35 @@ Scheduler g_MainScheduler; // - Instantiate a Scheduler
 void main(void)
 {
 
-    P2->DIR |= BIT0 + BIT1; //Red LED
+    P2->DIR |= BIT0 + BIT1 + BIT2; //Red LED
     // - Instantiate two new Tasks
     LED BlueLED(BIT2);
     LED GreenLED(BIT1);
 
     BlueLED.setKey("TAREA1");
+    BlueLED.setDestKey("TAREA2");
     GreenLED.setKey("TAREA2");
+    GreenLED.setDestKey("TAREA1");
+
+    /*if ("TAREA1" == (&GreenLED)->m_stMssg.std_pDestKey)
+    {
+        P2->OUT = BIT2;
+    }
+    __delay_cycles(1000000);
     //Task *pointer = (&GreenLED);
 
-    if ("TAREA2" == (&GreenLED)->getKey())
+    if ("TAREA1" == (&BlueLED)->getKey())
     {
-        P2->OUT =BIT0;
-    }else{
-        P2->OUT =BIT1;
-    }
+        P2->OUT = BIT0;
+    }*/
 
 
     //ADC TestADC(0);
     // - Run the overall setup function for the system
-    //Setup();
+    Setup();
     //- Attach the Tasks to the Scheduler;
-    //g_MainScheduler.attach(&BlueLED, 500);
-    //g_MainScheduler.attach(&GreenLED, 500);
+    g_MainScheduler.attach(&BlueLED, 100);
+    g_MainScheduler.attach(&GreenLED, 200);
     //g_MainScheduler.attach(&TestADC, 0);
 
     // - Run the Setup for the scheduler and all tasks

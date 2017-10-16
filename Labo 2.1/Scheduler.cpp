@@ -11,6 +11,7 @@ Scheduler::Scheduler()
     }
     return;
 }
+
 // - The attach function, inserts the task into the schedule slots.
 uint8_t Scheduler::attach(Task * i_ToAttach, uint64_t i_u64TickInterval)
 {
@@ -22,12 +23,15 @@ uint8_t Scheduler::attach(Task * i_ToAttach, uint64_t i_u64TickInterval)
     l_st_StructToAttach.u64ticks = this->m_u64ticks;
     l_st_StructToAttach.u64TickInterval = 0;
 	l_st_StructToAttach.u64TickIntervalInitValue = i_u64TickInterval;
+	//g_aTaskPointers[m_u8NextSlot] = i_ToAttach;
 
     if((m_u8OpenSlots>0) && (m_u8NextSlot < NUMBER_OF_SLOTS))
     {
         m_aSchedule[m_u8NextSlot] =  l_st_StructToAttach;
         m_u8OpenSlots--;
         m_u8NextSlot++;
+
+        m_aTaskInfoStructs[m_u8NextSlot] = l_st_StructToAttach;
     }
     else
     {
@@ -35,6 +39,7 @@ uint8_t Scheduler::attach(Task * i_ToAttach, uint64_t i_u64TickInterval)
     }
     return l_ErrorCode;
 }
+
 // - Execute the current schedule
 uint8_t Scheduler::run(void)
 {
@@ -58,7 +63,11 @@ uint8_t Scheduler::run(void)
 		}
 		l_iNextTaskSlot++;
     }
-    CalculateNextSchedule(); // TODO
+
+
+    //CalculateNextSchedule();
+    ///CollectMessages();
+    //DistributeMessages();
 
     return l_u8ReturnCode;
 }
@@ -83,9 +92,107 @@ uint8_t Scheduler::setup(void)
 
 uint8_t Scheduler::CalculateNextSchedule(void)
 {
+    Task * l_pNextTask = (uintptr_t) 0;
+    uint8_t l_u8Schedule = 0;
+    char *l_pKey = NULL;
+    st_TaskInfo l_st_StructToAdd;
+
+    memset(m_aSchedule, 0, NUMBER_OF_SLOTS*sizeof(struct st_TaskInfo));
+
+    for (int l_iCounter = 0; l_iCounter < NUMBER_OF_SLOTS; l_iCounter++) {
+        //l_pNextTask = g_aTaskPointers[l_iCounter];
+        if (l_pNextTask->getRunFlag()) {
+            l_pKey = l_pNextTask->getKey();
+            for(int l_iCounter = 0; l_iCounter < NUMBER_OF_SLOTS; l_iCounter++){
+                l_st_StructToAdd = m_aTaskInfoStructs[l_iCounter];
+                if(l_st_StructToAdd.pToKey == l_pKey){
+                    m_aSchedule[l_u8Schedule] = l_st_StructToAdd;
+                    l_u8Schedule++;
+                }
+            }
+        }
+    }
     return(NO_ERR);
 }
+
 uint8_t Scheduler::SortScheduleByPriority(Task * i_pSchedule)
 {
     return(NO_ERR);
 }
+
+
+uint8_t Scheduler::CollectMessages(void)
+{
+    Task *l_pNextSender = NULL;
+    int l_iCounter;
+    for(l_iCounter = 0; l_iCounter < NUMBER_OF_SLOTS; l_iCounter++) {
+        //l_pNextSender = g_aTaskPointers[l_iCounter];
+        if (l_pNextSender->getMssgFlag()) {
+            st_Message l_stNewMessage;
+            l_pNextSender->sendMessage(&l_stNewMessage);
+            InsertNode(m_pLinkedList, l_stNewMessage);
+        }
+    }
+    return(NO_ERR);
+}
+
+uint8_t Scheduler::DistributeMessages(void)
+{
+    st_Message l_stNewMessage;
+
+    while(m_pLinkedList != NULL) {
+            DistributeEraseFirstNode(m_pLinkedList, l_stNewMessage);
+    }
+    return(NO_ERR);
+}
+
+// ##############################################
+// Function that inserts new node on linked list
+// - creates new node
+// - saves message structure to node
+// - links node to list ordering them in ascending
+//   order with the DestTaskID of the message
+// ##############################################
+
+uint8_t Scheduler::InsertNode(st_Node *&l_pLinkedList, st_Message l_stNewMessage)
+{
+    st_Node *l_stNewNode = new st_Node();
+    l_stNewNode->std_stMssg = l_stNewMessage;
+
+    st_Node *l_stAux1 = l_pLinkedList;
+
+    l_pLinkedList = l_stNewNode; // -adding node at the beginning of the list
+    l_stNewNode->std_pnext = l_stAux1;
+
+    return(NO_ERR);
+}
+
+// ##############################################
+// Function that erases a node on a linked list
+// - Creates a temporary node to store the node
+//   on the list that will be deleted
+// - Current message is distributed to Task
+// - Pointer to list then points to the second
+//   node
+// - Temporary node is deleted
+// ##############################################
+
+uint8_t Scheduler::DistributeEraseFirstNode(st_Node *&l_pLinkedList, st_Message l_stMessage)
+{
+    st_Node *l_stAux = l_pLinkedList; // Guarda el primer elemennto de la lista
+    l_stMessage = l_stAux->std_stMssg; // Guarda el mensaje del primer elemento de la lista
+    char *l_pKey = l_stMessage.std_pDestKey; // Guarda el "key" o dirreccion
+    Task *l_pTaskPointer = NULL; //
+
+    for(int l_iCounter = 0; l_iCounter < NUMBER_OF_SLOTS; l_iCounter++){
+        //l_pTaskPointer = g_aTaskPointers[l_iCounter];
+        if(l_pTaskPointer->getKey() == l_pKey){
+            l_pTaskPointer->readMessage(&l_stMessage);
+        }
+    }
+    l_pLinkedList = l_stAux->std_pnext;
+    delete l_stAux;
+
+    return(NO_ERR);
+}
+
