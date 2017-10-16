@@ -109,6 +109,9 @@ uint8_t Scheduler::CalculateNextSchedule(void)
 
     for (int l_iCounter = 0; l_iCounter < NUMBER_OF_SLOTS; l_iCounter++) {
         l_pNextTask = g_aTaskPointers[l_iCounter];
+        if(l_pNextTask == (uintptr_t(0))){
+            break;
+        }
         if (l_pNextTask->getRunFlag()) {
             l_pKey = l_pNextTask.getKey();
             for(int l_iCounter = 0; l_iCounter < NUMBER_OF_SLOTS; l_iCounter++){
@@ -116,6 +119,7 @@ uint8_t Scheduler::CalculateNextSchedule(void)
                 if(l_st_StructToAdd.pToKey == l_pKey){
                     m_aSchedule[l_u8Schedule] = l_st_StructToAdd;
                     l_u8Schedule++;
+                    break;
                 }
             }
         }
@@ -133,6 +137,7 @@ uint8_t Scheduler::CollectMessages(void)
             st_Message l_stNewMessage;
             l_pNextSender->sendMessage(&l_stNewMessage);
             InsertNode(g_pLinkedList, l_stNewMessage);
+            break;
         }
     }
     return(NO_ERR);
@@ -190,6 +195,7 @@ uint8_t Scheduler::DistributeEraseFirstNode(st_Node *&l_pLinkedList, st_Message 
         l_pTaskPointer = g_aTaskPointers[l_iCounter];
         if(l_pTaskPointer->getKey() == l_pKey){
             l_pTaskPointer->readMessage(l_stMessage);
+            break;
         }
     }
     l_pLinkedList = l_stAux->std_pnext;
@@ -197,15 +203,3 @@ uint8_t Scheduler::DistributeEraseFirstNode(st_Node *&l_pLinkedList, st_Message 
 
     return(NO_ERR);
 }
-
-
-// distribute_messages {
-//   while(next != NULL) {
-//     msg.key
-//
-//     iterate_over_slots
-//     if (slot.key = msg.key) {
-//       task.readMessage(msg);
-//     }
-//   }
-// }
