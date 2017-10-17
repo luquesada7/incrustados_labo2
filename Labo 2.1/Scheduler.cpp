@@ -14,7 +14,11 @@ Scheduler::Scheduler()
     return;
 }
 
-// - The attach function, inserts the task into the schedule slots.
+// ##############################################
+// The attach function, inserts the task into the 
+// schedule slots.
+// ##############################################
+
 uint8_t Scheduler::attach(Task * i_ToAttach, uint64_t i_u64TickInterval)
 {
     uint8_t l_ErrorCode = NO_ERR;
@@ -42,7 +46,11 @@ uint8_t Scheduler::attach(Task * i_ToAttach, uint64_t i_u64TickInterval)
     return l_ErrorCode;
 }
 
+// ##############################################
+// Run
 // - Execute the current schedule
+// ##############################################
+
 uint8_t Scheduler::run(void)
 {
     int l_iNextTaskSlot = 0U;
@@ -73,7 +81,12 @@ uint8_t Scheduler::run(void)
 
     return l_u8ReturnCode;
 }
+
+// ##############################################
+// Setup
 // - Execute the setup function for all tasks
+// ##############################################
+
 uint8_t Scheduler::setup(void)
 {
     int l_iNextTaskSlot = 0U;
@@ -91,6 +104,11 @@ uint8_t Scheduler::setup(void)
     }
     return l_u8ReturnCode;
 }
+
+// ##############################################
+// Al final se lo agrego! Para saber como va a
+// quedar
+// ##############################################
 
 uint8_t Scheduler::CalculateNextSchedule(void)
 {
@@ -133,11 +151,11 @@ uint8_t Scheduler::SortScheduleByPriority(Task * i_pSchedule)
 }
 
 // ##############################################
-// Function that inserts new node on linked list
-// - creates new node
-// - saves message structure to node
-// - links node to list ordering them in ascending
-//   order with the DestTaskID of the message
+// Collects messages from Tasks on m_aSchedule
+// - Checks Task's m_MssgFlag. If it is ON its
+//   sendMessage() function is runned
+// - The message received is attached to the 
+//   message's linked list
 // ##############################################
 
 uint8_t Scheduler::CollectMessages(void)
@@ -161,6 +179,13 @@ uint8_t Scheduler::CollectMessages(void)
     }
     return(NO_ERR);
 }
+
+// ##############################################
+// Function that inserts new node on linked list
+// - creates new node
+// - saves message structure to node
+// - links node at the end of the list
+// ##############################################
 
 uint8_t Scheduler::InsertNode(st_Node *&l_pLinkedList, st_Message l_stNewMessage)
 {
@@ -190,15 +215,10 @@ uint8_t Scheduler::InsertNode(st_Node *&l_pLinkedList, st_Message l_stNewMessage
     return(NO_ERR);
 }
 
-// ##############################################
-// Function that erases a node on a linked list
-// - Creates a temporary node to store the node
-//   on the list that will be deleted
-// - Current message is distributed to Task
-// - Pointer to list then points to the second
-//   node
-// - Temporary node is deleted
-// ##############################################
+// ###################################################
+// Function that distributes messages to their 
+// respective Tasks using DistributeEraseFirstNode()
+// ###################################################
 
 uint8_t Scheduler::DistributeMessages(void)
 {
@@ -211,6 +231,15 @@ uint8_t Scheduler::DistributeMessages(void)
     return(NO_ERR);
 }
 
+// ##############################################
+// Function that erases a node on a linked list
+// - Creates a temporary node to store the node
+//   on the list that will be deleted
+// - Current message is distributed to Task
+// - Pointer to list then points to the second
+//   node
+// - Temporary node is deleted
+// ##############################################
 
 uint8_t Scheduler::DistributeEraseFirstNode(st_Node *&l_pLinkedList, st_Message l_stMessage)
 {
