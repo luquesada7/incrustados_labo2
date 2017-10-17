@@ -20,11 +20,11 @@ class LED : public Task
         virtual uint8_t run(void);
         virtual uint8_t setup(void);
         virtual uint8_t readMessage(st_Message *l_stNewMessage);
-        virtual uint8_t sendMessage(st_Message *l_stNewMessage);
+        //virtual uint8_t sendMessage(st_Message *l_stNewMessage);
 
     protected:
-        bool m_bsendTestMailbox;
-        bool m_brecievedTestMailbox;
+        //bool m_bsendTestMailbox;
+        bool m_breceivedTestMailbox;
     private:
 
 };

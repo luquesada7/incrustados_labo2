@@ -5,9 +5,11 @@ Scheduler::Scheduler()
 {
     m_u8OpenSlots = static_cast<uint8_t>(NUMBER_OF_SLOTS);
     m_u8NextSlot = 0;
+    m_pLinkedList = NULL;
     for(int index = 0; index < NUMBER_OF_SLOTS; index++)
     {
         m_aSchedule[index].pToAttach = (uintptr_t) 0; // Init to an invalid pointer
+        m_aTaskInfoStructs[index].pToAttach = (uintptr_t) 0; // Init to an invalid pointer;
     }
     return;
 }
@@ -23,15 +25,15 @@ uint8_t Scheduler::attach(Task * i_ToAttach, uint64_t i_u64TickInterval)
     l_st_StructToAttach.u64ticks = this->m_u64ticks;
     l_st_StructToAttach.u64TickInterval = 0;
 	l_st_StructToAttach.u64TickIntervalInitValue = i_u64TickInterval;
-	//g_aTaskPointers[m_u8NextSlot] = i_ToAttach;
+	g_aTaskPointers[m_u8NextSlot] = i_ToAttach;
 
     if((m_u8OpenSlots>0) && (m_u8NextSlot < NUMBER_OF_SLOTS))
     {
         m_aSchedule[m_u8NextSlot] =  l_st_StructToAttach;
+        g_aTaskPointers[m_u8NextSlot] = i_ToAttach;
+        //--->> m_aTaskInfoStructs[m_u8NextSlot] = l_st_StructToAttach;
         m_u8OpenSlots--;
         m_u8NextSlot++;
-
-        m_aTaskInfoStructs[m_u8NextSlot] = l_st_StructToAttach;
     }
     else
     {
@@ -52,11 +54,12 @@ uint8_t Scheduler::run(void)
     	l_pNextTask = static_cast<Task *> (m_aSchedule[l_iNextTaskSlot].pToAttach);
 		if(l_pNextTask != ((uintptr_t) 0))
 		{
-			if(m_aSchedule[l_iNextTaskSlot].u64TickInterval == 0){
+			if(m_aSchedule[l_iNextTaskSlot].u64TickInterval == 0 || l_pNextTask->getRunFlag())
+		    //if(m_aSchedule[l_iNextTaskSlot].u64TickInterval == 0)
+		    {
 				l_pNextTask->run();
 			}
 			m_aSchedule[l_iNextTaskSlot].u64TickInterval ++;
-
 			if(m_aSchedule[l_iNextTaskSlot].u64TickInterval >= m_aSchedule[l_iNextTaskSlot].u64TickIntervalInitValue) {
 				m_aSchedule[l_iNextTaskSlot].u64TickInterval = 0;
 			}
@@ -64,10 +67,9 @@ uint8_t Scheduler::run(void)
 		l_iNextTaskSlot++;
     }
 
-
+    CollectMessages();
+    DistributeMessages();
     //CalculateNextSchedule();
-    ///CollectMessages();
-    //DistributeMessages();
 
     return l_u8ReturnCode;
 }
@@ -99,15 +101,25 @@ uint8_t Scheduler::CalculateNextSchedule(void)
 
     memset(m_aSchedule, 0, NUMBER_OF_SLOTS*sizeof(struct st_TaskInfo));
 
-    for (int l_iCounter = 0; l_iCounter < NUMBER_OF_SLOTS; l_iCounter++) {
-        //l_pNextTask = g_aTaskPointers[l_iCounter];
-        if (l_pNextTask->getRunFlag()) {
+    for (int l_iCounter = 0; l_iCounter < NUMBER_OF_SLOTS; l_iCounter++)
+    {
+        // -->> l_pNextTask = g_aTaskPointers[l_iCounter];
+        l_pNextTask = static_cast<Task *> (m_aSchedule[l_iCounter].pToAttach);
+        if(l_pNextTask == uintptr_t(0))
+        {
+            break;
+        }
+        if (l_pNextTask->getRunFlag())
+        {
             l_pKey = l_pNextTask->getKey();
-            for(int l_iCounter = 0; l_iCounter < NUMBER_OF_SLOTS; l_iCounter++){
+            for(int l_iCounter = 0; l_iCounter < NUMBER_OF_SLOTS; l_iCounter++)
+            {
                 l_st_StructToAdd = m_aTaskInfoStructs[l_iCounter];
-                if(l_st_StructToAdd.pToKey == l_pKey){
+                if(l_st_StructToAdd.pToKey == l_pKey)
+                {
                     m_aSchedule[l_u8Schedule] = l_st_StructToAdd;
                     l_u8Schedule++;
+                    break;
                 }
             }
         }
@@ -120,32 +132,6 @@ uint8_t Scheduler::SortScheduleByPriority(Task * i_pSchedule)
     return(NO_ERR);
 }
 
-
-uint8_t Scheduler::CollectMessages(void)
-{
-    Task *l_pNextSender = NULL;
-    int l_iCounter;
-    for(l_iCounter = 0; l_iCounter < NUMBER_OF_SLOTS; l_iCounter++) {
-        //l_pNextSender = g_aTaskPointers[l_iCounter];
-        if (l_pNextSender->getMssgFlag()) {
-            st_Message l_stNewMessage;
-            l_pNextSender->sendMessage(&l_stNewMessage);
-            InsertNode(m_pLinkedList, l_stNewMessage);
-        }
-    }
-    return(NO_ERR);
-}
-
-uint8_t Scheduler::DistributeMessages(void)
-{
-    st_Message l_stNewMessage;
-
-    while(m_pLinkedList != NULL) {
-            DistributeEraseFirstNode(m_pLinkedList, l_stNewMessage);
-    }
-    return(NO_ERR);
-}
-
 // ##############################################
 // Function that inserts new node on linked list
 // - creates new node
@@ -154,14 +140,51 @@ uint8_t Scheduler::DistributeMessages(void)
 //   order with the DestTaskID of the message
 // ##############################################
 
+uint8_t Scheduler::CollectMessages(void)
+{
+    Task *l_pNextSender = NULL;
+    int l_iCounter;
+    for(l_iCounter = 0; l_iCounter < NUMBER_OF_SLOTS; l_iCounter++)
+    {
+        l_pNextSender = static_cast<Task *> (m_aSchedule[l_iCounter].pToAttach);
+        //l_pNextSender = g_aTaskPointers[l_iCounter];
+        if(l_pNextSender != ((uintptr_t) 0))
+        {
+            if (l_pNextSender->getMssgFlag())
+            {
+                st_Message l_stNewMessage;
+                l_pNextSender->sendMessage(&l_stNewMessage);
+                InsertNode(m_pLinkedList, l_stNewMessage);
+                //break;
+            }
+        }
+    }
+    return(NO_ERR);
+}
+
 uint8_t Scheduler::InsertNode(st_Node *&l_pLinkedList, st_Message l_stNewMessage)
 {
     st_Node *l_stNewNode = new st_Node();
     l_stNewNode->std_stMssg = l_stNewMessage;
 
     st_Node *l_stAux1 = l_pLinkedList;
+    st_Node *l_stAux2 = NULL;
 
-    l_pLinkedList = l_stNewNode; // -adding node at the beginning of the list
+    while(l_stAux1 != NULL)
+    {
+        l_stAux2 = l_stAux1;
+        l_stAux1 = l_stAux1->std_pnext;
+    }
+
+    if(l_pLinkedList == l_stAux1)
+    {
+        l_pLinkedList = l_stNewNode;
+    }
+    else
+    {
+        l_stAux2->std_pnext = l_stNewNode;
+    }
+    //l_pLinkedList = l_stNewNode; // -adding node at the beginning of the list
     l_stNewNode->std_pnext = l_stAux1;
 
     return(NO_ERR);
@@ -177,6 +200,18 @@ uint8_t Scheduler::InsertNode(st_Node *&l_pLinkedList, st_Message l_stNewMessage
 // - Temporary node is deleted
 // ##############################################
 
+uint8_t Scheduler::DistributeMessages(void)
+{
+    st_Message l_stNewMessage;
+
+    while(m_pLinkedList != NULL)
+    {
+            DistributeEraseFirstNode(m_pLinkedList, l_stNewMessage);
+    }
+    return(NO_ERR);
+}
+
+
 uint8_t Scheduler::DistributeEraseFirstNode(st_Node *&l_pLinkedList, st_Message l_stMessage)
 {
     st_Node *l_stAux = l_pLinkedList; // Guarda el primer elemennto de la lista
@@ -184,10 +219,16 @@ uint8_t Scheduler::DistributeEraseFirstNode(st_Node *&l_pLinkedList, st_Message 
     char *l_pKey = l_stMessage.std_pDestKey; // Guarda el "key" o dirreccion
     Task *l_pTaskPointer = NULL; //
 
-    for(int l_iCounter = 0; l_iCounter < NUMBER_OF_SLOTS; l_iCounter++){
-        //l_pTaskPointer = g_aTaskPointers[l_iCounter];
-        if(l_pTaskPointer->getKey() == l_pKey){
-            l_pTaskPointer->readMessage(&l_stMessage);
+    for(int l_iCounter = 0; l_iCounter < NUMBER_OF_SLOTS; l_iCounter++)
+    {
+        //-->l_pTaskPointer = g_aTaskPointers[l_iCounter];
+        l_pTaskPointer = static_cast<Task *> (m_aSchedule[l_iCounter].pToAttach);
+        if(l_pTaskPointer != ((uintptr_t) 0))
+        {
+            if(l_pTaskPointer->getKey() == l_pKey)
+            {
+                l_pTaskPointer->readMessage(&l_stMessage);
+            }
         }
     }
     l_pLinkedList = l_stAux->std_pnext;

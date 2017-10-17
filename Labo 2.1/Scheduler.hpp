@@ -13,11 +13,11 @@
 #include <stdio.h>
 #include <string.h>
 
-//extern Task *g_aTaskPointers[NUMBER_OF_SLOTS];
-
 
 #define NUMBER_OF_SLOTS 255
 #define NULL            0
+
+extern Task *g_aTaskPointers[NUMBER_OF_SLOTS];
 
 // - This structure defines the Task Information
 struct st_TaskInfo {

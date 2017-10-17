@@ -25,6 +25,7 @@ class Task
 	    bool                getMssgFlag(){return m_bMssgFlag;};
 	    bool                getRunFlag(){return m_bRunFlag;};
 	    void                setDestKey(char *l_pKey){m_stMssg.std_pDestKey = l_pKey;};
+	    st_Message m_stMssg;
 
 	private:
 	   static uint8_t m_u8NextTaskID;
@@ -37,7 +38,7 @@ class Task
        bool m_bMssgFlag; // - Flag: Task has a message to send
 	   bool m_bIsFinished;
 	   char *m_pKey;
-	   st_Message m_stMssg;
+	   //st_Message m_stMssg;
 
 };
 

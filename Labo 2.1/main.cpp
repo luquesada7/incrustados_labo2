@@ -4,9 +4,11 @@
 #include "Task.hpp"
 #include "LED.hpp"
 #include "ADC.hpp"
+#include "TEST.hpp"
 #include "Strct.hpp"
 #include <stdio.h>
 
+Task *g_aTaskPointers[NUMBER_OF_SLOTS] = {NULL};
 
 uint16_t ADC14Resultx = 0U;
 uint16_t ADC14Resulty = 0U;
@@ -15,36 +17,48 @@ uint16_t ADC14Resultz = 0U;
 uint16_t *pToAx = &ADC14Resultx;
 uint16_t datapToAx = *pToAx;
 
-// ##########################
+/*bool RunFlagBLUE = false;
+bool RunFlagGREEN = false;
+bool MssgFlagBLUE = false;
+bool MssgFlagGREEN = false;*/
+
+
+// ################################################################################
 // Global/Static declarations
-// ##########################
+// ################################################################################
 
 uint8_t Task::m_u8NextTaskID = 0; // - Init task ID
 volatile static uint64_t g_SystemTicks = 0; // - The system counter.
 Scheduler g_MainScheduler; // - Instantiate a Scheduler
 
-// #########################
-//          MAIN
-// #########################
+// ################################################################################
+//                                       MAIN
+// ################################################################################
 
 void main(void)
 {
+
+    // ################################################################################
+    //                                 TEST ZONE
+    // ################################################################################
 
     P2->DIR |= BIT0 + BIT1 + BIT2; //Red LED
     // - Instantiate two new Tasks
     LED BlueLED(BIT2);
     LED GreenLED(BIT1);
+    TEST Suma(0);
+    //ADC TestADC(0);
 
     BlueLED.setKey("TAREA1");
-    BlueLED.setDestKey("TAREA2");
-    GreenLED.setKey("TAREA2");
-    GreenLED.setDestKey("TAREA1");
+    Suma.setKey("TAREA2");
+    Suma.setDestKey("TAREA1");
 
-    /*if ("TAREA1" == (&GreenLED)->m_stMssg.std_pDestKey)
+    /*if ((&BlueLED)->getKey() == (&Suma)->m_stMssg.std_pDestKey)
     {
-        P2->OUT = BIT2;
-    }
-    __delay_cycles(1000000);
+        P2->OUT = BIT0+BIT2;
+    }*/
+
+    /*__delay_cycles(1000000);
     //Task *pointer = (&GreenLED);
 
     if ("TAREA1" == (&BlueLED)->getKey())
@@ -52,14 +66,19 @@ void main(void)
         P2->OUT = BIT0;
     }*/
 
-
-    //ADC TestADC(0);
     // - Run the overall setup function for the system
     Setup();
+
     //- Attach the Tasks to the Scheduler;
-    g_MainScheduler.attach(&BlueLED, 100);
-    g_MainScheduler.attach(&GreenLED, 200);
+    g_MainScheduler.attach(&BlueLED, 1000);
+    //g_MainScheduler.attach(&Suma, 10);
+    //g_MainScheduler.attach(&GreenLED, 2000);
     //g_MainScheduler.attach(&TestADC, 0);
+
+    // ################################################################################
+    //                                 END TEST ZONE
+    // ################################################################################
+
 
     // - Run the Setup for the scheduler and all tasks
     g_MainScheduler.setup();
