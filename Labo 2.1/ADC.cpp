@@ -17,6 +17,11 @@ ADC::ADC(uint16_t)
 {
 };
 
+ //################################
+ // Run 
+ // - Starts ADC conversion
+ //################################
+
 uint8_t ADC::run()
 {
 
@@ -24,6 +29,12 @@ uint8_t ADC::run()
     P2->OUT ^= BIT6;
     return (NO_ERR);
 };
+
+ //################################
+ // Setup
+ // - Setup registers for ADC config.
+ // - Setup of memory registers
+ //################################
 
 uint8_t ADC::setup()
 {
@@ -42,7 +53,6 @@ uint8_t ADC::setup()
     //  CONVERSION MEMORY REGISTER
     // *****************************
     // - Memory MCTL[0]-MCTL[2] for x, y, z accelerometer measurements
-    //
 
     ADC14->MCTL[1] = ADC14_MCTLN_INCH_11 | ADC14_MCTLN_VRSEL_0;
     ADC14->MCTL[2] = ADC14_MCTLN_INCH_13 | ADC14_MCTLN_VRSEL_0;
