@@ -25,7 +25,7 @@
 class PAINT : public Task
 {
   public:
-    PAINT(void);
+    PAINT(uint16_t);
     virtual uint8_t run(void);
     virtual uint8_t setup(void);
     virtual uint8_t readMessage(st_Message * l_stNewMessage);

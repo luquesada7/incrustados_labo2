@@ -12,7 +12,7 @@
 #include "ADC.hpp"
 #include "TEST.hpp"
 #include "Strct.hpp"
-//#include "PAINT.hpp"
+#include "PAINT.hpp"
 #include "PIX.hpp"
 #include <stdio.h>
 
@@ -59,13 +59,18 @@ void main(void)
     LED BlueLED(BIT2);
     LED GreenLED(BIT1);
     PIX Pixeles(0);
+    PAINT LCD(0);
     TEST Suma(0);
     //ADC TestADC(0);
 
-    BlueLED.setKey("TAREA1");
-    GreenLED.setKey("TAREA1");
-    Suma.setKey("TAREA2");
-    Suma.setDestKey("TAREA2");
+    BlueLED.setKey("BLUE");
+    GreenLED.setKey("GREEN");
+    Suma.setKey("SUMA");
+    Suma.setDestKey("BLUE");
+    Pixeles.setKey("PIXELES");
+    Pixeles.setDestKey("LCD");
+    //LCD.setKey("LCD");
+
 
     /*if ((&BlueLED)->getKey() == (&Suma)->m_stMssg.std_pDestKey)
     {
@@ -84,8 +89,8 @@ void main(void)
     Setup();
 
     //- Attach the Tasks to the Scheduler;
-    g_MainScheduler.attach(&BlueLED, 100);
-    //g_MainScheduler.attach(&Suma, 50);
+    g_MainScheduler.attach(&BlueLED, 10000);
+    g_MainScheduler.attach(&Suma, 50);
     //g_MainScheduler.attach(&GreenLED, 200);
     //g_MainScheduler.attach(&Pixeles, 100);
     //g_MainScheduler.attach(&TestADC, 0);
