@@ -49,6 +49,12 @@ uint8_t PIX::run()
   return(NO_ERR);
 };
 
+  //################################
+  // Setup
+  // - Defines an initial value for 
+  //   PastZ variable
+  //################################
+
 uint8_t PIX::setup()
 {
   m_fPastZ = 8000;//Falta calcular
@@ -56,12 +62,27 @@ uint8_t PIX::setup()
   return(NO_ERR);
 };
 
+  //################################
+  // Reads message received
+  // - Reads float data for ADC Z
+  //   component and stores is in 
+  //   m_fNewZ
+  // - Turns on RunFlag 
+  //################################
 uint8_t PIX::readMessage(st_Message *l_stNewMessage)
 {
     m_fNewZ = l_stNewMessage->std_fFloatData;
-    m_bRunFlag = 0;
+    m_bRunFlag = 1;
     return(NO_ERR);
 };
+
+  //################################
+  // Sends message
+  // - Sends the color that needs to
+  //   be painted on the LED screen  
+  //   and the amount of pixel lines
+  // - Turns off MssgFlag 
+  //################################
 
 uint8_t PIX::sendMessage(st_Message *l_stNewMessage)
 {
