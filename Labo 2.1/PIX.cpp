@@ -51,7 +51,9 @@ uint8_t PIX::run()
 
   //################################
   // Setup
+<<<<<<< HEAD
   // - Defines an initial value for
+=======
   //   PastZ variable
   //################################
 
