@@ -9,21 +9,17 @@
 #ifndef PIX_HPP_
 #define PIX_HPP_
 #define __NOP __nop
-#include <ti/devices/msp432p4xx/inc/msp.h>
 #include "Task.hpp"
-#include "Strct.hpp"
+#include <stdlib.h>
 
 #define NUMBER_OF_SLOTS 255
 #define NULL            0
 
-/* Variables globales del programa */
-extern st_Node *g_pLinkedList;
-extern Task * g_aTaskPointers[NUMBER_OF_SLOTS];
 
 class PIX : public Task
 {
   public:
-    PIX(void);
+    PIX(uint16_t);
     virtual uint8_t run(void);
     virtual uint8_t setup(void);
     virtual uint8_t readMessage(st_Message * l_stNewMessage);
@@ -35,8 +31,8 @@ class PIX : public Task
     int m_iLines;
     bool m_bColor;
   private:
-    const float l_fPixDelta;
-    const int l_iPixLine;
+    float l_fPixDelta;
+    int l_iPixLine;
 };
 
 #endif /* PIX_HPP_ */

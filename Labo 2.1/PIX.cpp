@@ -12,19 +12,19 @@
  */
 
 #include "PIX.hpp"
-#include <stdlib.h>
 
-PIX::PIX()
+
+PIX::PIX(uint16_t)
 {
-  const float l_fPixDelta = 55;
-  const int l_iPixLine = 128;
-  m_pKey = "PIX";
-  m_stMssg.std_pDestKey = "PAINT";
+  l_fPixDelta = 55;
+  l_iPixLine = 128;
+  //m_pKey = "PIX";
+  //m_stMssg.std_pDestKey = "PAINT";
 }
 
 uint8_t PIX::run()
 {
-    m_bRunFlag = 0;
+
   //################################
   // Selecting color to paint pixels
   // - false = blue
@@ -44,25 +44,31 @@ uint8_t PIX::run()
   m_iLines = 1 + ((m_fDelta*l_fPixDelta - l_iPixLine)/l_iPixLine);
   m_fPastZ = m_fNewZ; //- saving new m_fPastZ
 
-  m_
-}
+  m_bRunFlag = 0;
+
+  return(NO_ERR);
+};
 
 uint8_t PIX::setup()
 {
   m_fPastZ = 8000;//Falta calcular
-}
+  m_bRunFlag = 0;
+  return(NO_ERR);
+};
 
-uint8_t PAINT::readMessage(st_Message *l_stNewMessage)
+uint8_t PIX::readMessage(st_Message *l_stNewMessage)
 {
     m_fNewZ = l_stNewMessage->std_fFloatData;
-    m_bRunFlag = 1;
-}
+    m_bRunFlag = 0;
+    return(NO_ERR);
+};
 
-uint8_t PAINT::sendMessage(st_Message *l_stNewMessage)
+uint8_t PIX::sendMessage(st_Message *l_stNewMessage)
 {
-    m_stMssg->std_bBoolData = m_bColor;
-    m_stMssg->std_u16IntData = m_iLines;
+    m_stMssg.std_bBoolData = m_bColor;
+    m_stMssg.std_u16IntData = m_iLines;
 
-    l_stNewMessage = m_stMssg;
+    *l_stNewMessage = m_stMssg;
     m_bMssgFlag = 0;
+    return(NO_ERR);
 }

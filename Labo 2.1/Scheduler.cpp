@@ -25,12 +25,12 @@ uint8_t Scheduler::attach(Task * i_ToAttach, uint64_t i_u64TickInterval)
     l_st_StructToAttach.u64ticks = this->m_u64ticks;
     l_st_StructToAttach.u64TickInterval = 0;
 	l_st_StructToAttach.u64TickIntervalInitValue = i_u64TickInterval;
-	g_aTaskPointers[m_u8NextSlot] = i_ToAttach;
+	//g_aTaskPointers[m_u8NextSlot] = i_ToAttach;
 
     if((m_u8OpenSlots>0) && (m_u8NextSlot < NUMBER_OF_SLOTS))
     {
         m_aSchedule[m_u8NextSlot] =  l_st_StructToAttach;
-        g_aTaskPointers[m_u8NextSlot] = i_ToAttach;
+        //g_aTaskPointers[m_u8NextSlot] = i_ToAttach;
         //--->> m_aTaskInfoStructs[m_u8NextSlot] = l_st_StructToAttach;
         m_u8OpenSlots--;
         m_u8NextSlot++;

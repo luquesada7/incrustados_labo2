@@ -15,9 +15,9 @@
 
 PAINT::PAINT()
 {
-    const float l_fPixDelta = 128.0 / 7000.0;
-    const int l_iPixLine = 128;
-    m_pKey = "PAINT";
+    l_fPixDelta = 128.0 / 7000.0;
+    l_iPixLine = 128;
+    //m_pKey = "PAINT";
 }
 
 uint8_t PAINT::run()
@@ -25,6 +25,7 @@ uint8_t PAINT::run()
     m_bRunFlag = 0;
     m_stRect.xMin = 0;
     m_stRect.xMax = 127;
+    uint16_t l_uint16tulValue;
 
     if (m_bColor) {
         m_iNewLine = m_iLastLine - m_iLines;
@@ -60,11 +61,13 @@ uint8_t PAINT::run()
     }
 
     m_iLastLine = m_iNewLine; //- saving new LastLine
+    return(NO_ERR);
 }
 
 uint8_t PAINT::setup()
 {
   m_iLastLine = 64; //middle of LCD
+  return(NO_ERR);
 }
 
 uint8_t PAINT::readMessage(st_Message *l_stNewMessage)
@@ -72,4 +75,5 @@ uint8_t PAINT::readMessage(st_Message *l_stNewMessage)
     m_iLines = l_stNewMessage->std_u16IntData;
     m_bColor = l_stNewMessage->std_bBoolData;
     m_bRunFlag = 1;
+    return(NO_ERR);
 }

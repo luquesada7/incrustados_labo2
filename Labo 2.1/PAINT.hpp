@@ -13,13 +13,14 @@
 #include <C:/ti/simplelink_msp432_sdk_1_40_01_00/source/ti/grlib/grlib.h>
 #include "Task.hpp"
 #include "Strct.hpp"
+#include <ti/devices/msp432p4xx/inc/msp.h>
+#include <C:/ti/simplelink_msp432_sdk_1_40_01_00/source/ti/devices/msp432p4xx/driverlib/driverlib.h>
+#include <C:/ti/simplelink_msp432_sdk_1_40_01_00/source/ti/grlib/grlib.h>
+#include "LcdDriver/HAL_MSP_EXP432P401R_Crystalfontz128x128_ST7735.h"
+#include "LcdDriver/Crystalfontz128x128_ST7735.h"
 
 #define NUMBER_OF_SLOTS 255
 #define NULL            0
-
-/* Variables globales del programa */
-extern st_Node *g_pLinkedList;
-extern Task * g_aTaskPointers[NUMBER_OF_SLOTS];
 
 class PAINT : public Task
 {
@@ -36,6 +37,8 @@ class PAINT : public Task
     bool m_bColor;
     Graphics_Rectangle m_stRect;
   private:
+    float l_fPixDelta;
+    int l_iPixLine;
 };
 
 #endif /* PAINT_HPP_ */

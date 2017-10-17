@@ -1,14 +1,25 @@
-#include <ti/devices/msp432p4xx/inc/msp.h>
 #include "main.hpp"
+#include "Task.hpp"
+#include <ti/devices/msp432p4xx/inc/msp.h>
+#include <C:/ti/simplelink_msp432_sdk_1_40_01_00/source/ti/devices/msp432p4xx/driverlib/driverlib.h>
+#include <C:/ti/simplelink_msp432_sdk_1_40_01_00/source/ti/grlib/grlib.h>
+#include "LcdDriver/HAL_MSP_EXP432P401R_Crystalfontz128x128_ST7735.h"
+#include "LcdDriver/Crystalfontz128x128_ST7735.h"
+#include <stdlib.h>
 #include "Scheduler.hpp"
 #include "Task.hpp"
 #include "LED.hpp"
 #include "ADC.hpp"
 #include "TEST.hpp"
 #include "Strct.hpp"
+//#include "PAINT.hpp"
+#include "PIX.hpp"
 #include <stdio.h>
 
-Task *g_aTaskPointers[NUMBER_OF_SLOTS] = {NULL};
+/* Graphic library context */
+Graphics_Context g_sContext;
+
+//Task *g_aTaskPointers[NUMBER_OF_SLOTS] = {NULL};
 
 uint16_t ADC14Resultx = 0U;
 uint16_t ADC14Resulty = 0U;
@@ -43,15 +54,18 @@ void main(void)
     // ################################################################################
 
     P2->DIR |= BIT0 + BIT1 + BIT2; //Red LED
+
     // - Instantiate two new Tasks
     LED BlueLED(BIT2);
     LED GreenLED(BIT1);
+    PIX Pixeles(0);
     TEST Suma(0);
     //ADC TestADC(0);
 
     BlueLED.setKey("TAREA1");
+    GreenLED.setKey("TAREA1");
     Suma.setKey("TAREA2");
-    Suma.setDestKey("TAREA1");
+    Suma.setDestKey("TAREA2");
 
     /*if ((&BlueLED)->getKey() == (&Suma)->m_stMssg.std_pDestKey)
     {
@@ -70,9 +84,10 @@ void main(void)
     Setup();
 
     //- Attach the Tasks to the Scheduler;
-    g_MainScheduler.attach(&BlueLED, 1000);
-    //g_MainScheduler.attach(&Suma, 10);
-    //g_MainScheduler.attach(&GreenLED, 2000);
+    g_MainScheduler.attach(&BlueLED, 100);
+    //g_MainScheduler.attach(&Suma, 50);
+    //g_MainScheduler.attach(&GreenLED, 200);
+    //g_MainScheduler.attach(&Pixeles, 100);
     //g_MainScheduler.attach(&TestADC, 0);
 
     // ################################################################################
@@ -135,6 +150,19 @@ void Setup(void)
 	NVIC_EnableIRQ(ADC14_IRQn);
 
 	__enable_irq();
+
+	/* Initializes display */
+    Crystalfontz128x128_Init();
+
+    /* Set default screen orientation */
+    Crystalfontz128x128_SetOrientation(LCD_ORIENTATION_UP);
+
+    /* Initializes graphics context */
+    Graphics_initContext(&g_sContext, &g_sCrystalfontz128x128,
+                         &g_sCrystalfontz128x128_funcs);
+    Graphics_setForegroundColor(&g_sContext, GRAPHICS_COLOR_RED);
+    Graphics_setBackgroundColor(&g_sContext, GRAPHICS_COLOR_RED);
+    GrContextFontSet(&g_sContext, &g_sFontFixed6x8);
 
 	return;
 }
