@@ -7,7 +7,7 @@
 
 #ifndef MAIN_HPP_
 #define MAIN_HPP_
-#define TIMER32_COUNT 0x00000BB8  // ~1ms with 3MHz clock
+#define TIMER32_COUNT 0x00002EE0  // ~1ms with 3MHz clock
 #define NUMBER_OF_SLOTS 255
 
 

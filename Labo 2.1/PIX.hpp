@@ -30,6 +30,7 @@ class PIX : public Task
     float m_fDelta;
     int m_iLines;
     bool m_bColor;
+    int count;
   private:
     float l_fPixDelta;
     int l_iPixLine;

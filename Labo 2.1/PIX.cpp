@@ -16,7 +16,7 @@
 
 PIX::PIX(uint16_t)
 {
-  l_fPixDelta = 55;
+  l_fPixDelta = 128.0 / 7000.0;;
   l_iPixLine = 128;
   //m_pKey = "PIX";
   //m_stMssg.std_pDestKey = "PAINT";
@@ -30,6 +30,7 @@ uint8_t PIX::run()
   // - false = blue
   // - true = brown
   //################################
+
   if(m_fNewZ > m_fPastZ) {
       m_bColor = true;
   } else{
@@ -41,26 +42,38 @@ uint8_t PIX::run()
   // that need to be painted
   //################################
   m_fDelta = abs(m_fNewZ- m_fPastZ);
-  m_iLines = 1 + ((m_fDelta*l_fPixDelta - l_iPixLine)/l_iPixLine);
+  //m_iLines = 1 + ((m_fDelta*l_fPixDelta - l_iPixLine)/l_iPixLine);
+  m_iLines = 1 + ((m_fDelta * l_fPixDelta * l_iPixLine - l_iPixLine) / l_iPixLine);
   m_fPastZ = m_fNewZ; //- saving new m_fPastZ
+  if (count%2 == 0)
+  {
+      m_fNewZ = m_fNewZ + 5000;
+  }
+  else
+  {
+      m_fNewZ = m_fNewZ - 5000;
+  }
+  count++;
+  m_bMssgFlag = true;
 
-  m_bRunFlag = 0;
+  //m_bRunFlag = false;
 
   return(NO_ERR);
 };
 
   //################################
   // Setup
-<<<<<<< HEAD
   // - Defines an initial value for
-=======
   //   PastZ variable
   //################################
 
 uint8_t PIX::setup()
 {
-  m_fPastZ = 8000;//Falta calcular
-  m_bRunFlag = 0;
+  m_fPastZ = 7500;//Falta calcular
+  m_fNewZ = 7500;
+  count = 0;
+  //m_bRunFlag = false;
+  m_bRunFlag = false;
   return(NO_ERR);
 };
 
@@ -74,7 +87,7 @@ uint8_t PIX::setup()
 uint8_t PIX::readMessage(st_Message *l_stNewMessage)
 {
     m_fNewZ = l_stNewMessage->std_fFloatData;
-    m_bRunFlag = 1;
+    m_bRunFlag = true;
     return(NO_ERR);
 };
 
@@ -90,8 +103,7 @@ uint8_t PIX::sendMessage(st_Message *l_stNewMessage)
 {
     m_stMssg.std_bBoolData = m_bColor;
     m_stMssg.std_u16IntData = m_iLines;
-
     *l_stNewMessage = m_stMssg;
-    m_bMssgFlag = 0;
+    m_bMssgFlag = false;
     return(NO_ERR);
 }

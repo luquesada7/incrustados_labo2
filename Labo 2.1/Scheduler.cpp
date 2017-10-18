@@ -265,3 +265,4 @@ uint8_t Scheduler::DistributeEraseFirstNode(st_Node *&l_pLinkedList, st_Message 
 
     return(NO_ERR);
 }
+

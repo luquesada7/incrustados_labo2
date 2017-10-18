@@ -28,12 +28,6 @@ uint16_t ADC14Resultz = 0U;
 uint16_t *pToAx = &ADC14Resultx;
 uint16_t datapToAx = *pToAx;
 
-/*bool RunFlagBLUE = false;
-bool RunFlagGREEN = false;
-bool MssgFlagBLUE = false;
-bool MssgFlagGREEN = false;*/
-
-
 // ################################################################################
 // Global/Static declarations
 // ################################################################################
@@ -53,23 +47,24 @@ void main(void)
     //                                 TEST ZONE
     // ################################################################################
 
-    P2->DIR |= BIT0 + BIT1 + BIT2; //Red LED
+    //P2->DIR |= BIT0 + BIT1 + BIT2; //Red LED
 
     // - Instantiate two new Tasks
     LED BlueLED(BIT2);
     LED GreenLED(BIT1);
+    LED RedLED(BIT0);
     PIX Pixeles(0);
     PAINT LCD(0);
     TEST Suma(0);
-    //ADC TestADC(0);
+    ADC TestADC(0);
 
     BlueLED.setKey("BLUE");
     GreenLED.setKey("GREEN");
-    Suma.setKey("SUMA");
-    Suma.setDestKey("BLUE");
+    //Suma.setKey("SUMA");
+    //Suma.setDestKey("GREEN");
     Pixeles.setKey("PIXELES");
     Pixeles.setDestKey("LCD");
-    //LCD.setKey("LCD");
+    LCD.setKey("LCD");
 
 
     /*if ((&BlueLED)->getKey() == (&Suma)->m_stMssg.std_pDestKey)
@@ -89,10 +84,12 @@ void main(void)
     Setup();
 
     //- Attach the Tasks to the Scheduler;
-    g_MainScheduler.attach(&BlueLED, 10000);
-    g_MainScheduler.attach(&Suma, 50);
-    //g_MainScheduler.attach(&GreenLED, 200);
-    //g_MainScheduler.attach(&Pixeles, 100);
+    //g_MainScheduler.attach(&RedLED, 80);
+    //g_MainScheduler.attach(&GreenLED, 40);
+    g_MainScheduler.attach(&BlueLED, 200);
+    //g_MainScheduler.attach(&Suma, 50);
+    g_MainScheduler.attach(&Pixeles, 100);
+    g_MainScheduler.attach(&LCD, 100);
     //g_MainScheduler.attach(&TestADC, 0);
 
     // ################################################################################

@@ -19,6 +19,7 @@
 #include "LcdDriver/HAL_MSP_EXP432P401R_Crystalfontz128x128_ST7735.h"
 #include "LcdDriver/Crystalfontz128x128_ST7735.h"
 
+
 #define NUMBER_OF_SLOTS 255
 #define NULL            0
 
@@ -29,12 +30,14 @@ class PAINT : public Task
     virtual uint8_t run(void);
     virtual uint8_t setup(void);
     virtual uint8_t readMessage(st_Message * l_stNewMessage);
-    virtual uint8_t sendMessage(st_Message * l_stNewMessage);
+    //virtual uint8_t sendMessage(st_Message * l_stNewMessage);
   protected:
     int m_iLastLine;
+    int m_iPaintLines;
     int m_iLines;
     int m_iNewLine;
     bool m_bColor;
+    bool m_breceivedTestMailbox;
     Graphics_Rectangle m_stRect;
   private:
     float l_fPixDelta;

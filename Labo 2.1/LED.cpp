@@ -15,7 +15,7 @@ uint8_t LED::run()
 {
     //#########################
     // Blink code Assuming PORT2
-    //P2->OUT ^= m_u16BITN;
+    P2->OUT ^= m_u16BITN;
     /*if (m_breceivedTestMailbox){
         P2->OUT = m_u16BITN;
         m_bsendTestMailbox = false;
@@ -24,9 +24,10 @@ uint8_t LED::run()
         m_bsendTestMailbox = true;
     }*/
 
-    if (m_breceivedTestMailbox){
+    /*if (m_breceivedTestMailbox){
         P2->OUT ^= m_u16BITN;
-    }
+    }*/
+
     m_bRunFlag = false;
     //#########################
     return(NO_ERR);
