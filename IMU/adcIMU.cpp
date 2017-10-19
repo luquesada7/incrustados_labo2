@@ -12,16 +12,14 @@ Graphics_Context g_sContext;
 uint16_t ADC14Resultx = 0U;
 uint16_t ADC14Resulty = 0U;
 uint16_t ADC14Resultz = 0U;
-int numlines = 0U;
-double linesLCD = 0U;
 
-float m_fPastZ = 7500;
-float m_fNewZ = 4500;
+uint16_t  m_fPastZ = 8085;
+uint16_t  m_fNewZ = 8085;
 float m_fDelta;
 int m_iLines;
 int m_iNewLine;
 bool m_bColor;
-const float l_fPixDelta = 128.0 / 7000.0;
+const float l_fPixDelta =  128.0 / 6400.0;
 const int l_iPixLine = 128;
 
 int m_iLastLine = 64;
@@ -30,7 +28,6 @@ uint16_t l_uint16tulValue;
 Graphics_Rectangle l_stRect;
 
 void Setup(void);
-void drawAccelData(int num);
 
 int main(void)
 {
@@ -55,9 +52,8 @@ int main(void)
         // that need to be painted
         //################################
         m_fDelta = abs(m_fNewZ - m_fPastZ);
-        m_iLines = 1
-                + ((m_fDelta * l_fPixDelta * l_iPixLine - l_iPixLine)
-                        / l_iPixLine);
+        m_iLines = 1 + ((m_fDelta * l_fPixDelta * l_iPixLine - l_iPixLine) / l_iPixLine);
+        //m_iLines = 1 + ((m_fDelta*l_fPixDelta - l_iPixLine)/l_iPixLine);
 
         l_stRect.xMin = 0;
         l_stRect.xMax = 127;
@@ -96,12 +92,14 @@ int main(void)
                 l_stRect.yMax = m_iNewLine;
             }
 
-            l_uint16tulValue = 0X02FF; //blue
+            l_uint16tulValue = 0X00FF; //blue
 
             Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &l_stRect,
                                             l_uint16tulValue);
         }
-
+        m_iLastLine = m_iNewLine;
+        m_fPastZ = m_fNewZ;
+        m_fNewZ = ADC14Resultz;
     }
 // return 0;
 }
@@ -192,27 +190,6 @@ void Setup(void)
 
 }
 
-void drawAccelData(int num)
-{
-    HAL_LCD_writeCommand(CM_RAMWR);
-    int i;
-    for (i = 0; i < num * 128; i++)
-    {
-        HAL_LCD_writeData(0xAA);
-        //light blue
-        HAL_LCD_writeData(0xAA);
-    }
-    int j;
-    for (j = num * 128; j < 16384; j++)
-    {
-        HAL_LCD_writeData(0X36);
-//brown
-        HAL_LCD_writeData(0X36);
-    }
-
-//HAL_LCD_delay(10000);
-    HAL_LCD_writeCommand(CM_DISPON);
-}
 
 extern "C"
 {
