@@ -193,16 +193,17 @@ extern "C"
 	// - Handle the ADC14 Interrupt
 	void ADC14_IRQHandler(void)
     {
-        //__disable_irq();
-        ADC14Resultz = ADC14->MEM[1];
+        __disable_irq();
+        //ADC14Resultz = ADC14->MEM[1];
         TestADC.m_stMssg.std_u16IntData = ADC14->MEM[1];
+        TestADC.m_bMssgFlag = true;
         //TestADC.m_bMssgFlag = true;
         //ADC14Resulty = ADC14->MEM[2];
         //ADC14Resultx = ADC14->MEM[3];
         //TestADC.setMssgFlag(true);
         ADC14->CLRIFGR0 =  ADC14_CLRIFGR0_CLRIFG1
                 | ADC14_CLRIFGR0_CLRIFG2 | ADC14_CLRIFGR0_CLRIFG3;
-        //__enable_irq();
+        __enable_irq();
         return;
     }
 

@@ -26,7 +26,6 @@ uint8_t ADC::run()
 
     ADC14->CTL0 = ADC14->CTL0 | ADC14_CTL0_SC; // Start
     //P2->OUT ^= BIT6;
-    m_bMssgFlag = true;
     return (NO_ERR);
 };
 
@@ -67,9 +66,7 @@ uint8_t ADC::setup()
 uint8_t ADC::sendMessage(st_Message *l_stNewMessage)
 {
     //m_stMssg.std_u16IntData = ADC14->MEM[1];
+    m_bMssgFlag = false;
     *l_stNewMessage = m_stMssg;
     return(NO_ERR);
 }
-
-
-
