@@ -2,8 +2,8 @@
  * PIX.cpp
  *
  *  Created on: Oct 9, 2017
- *      Authors: Jose Pablo Martinez &
-                 Luisa Fernanda Quesada
+ *      Authors: Luisa Fernanda Quesada &
+ *               Jose Pablo Martinez
  */
 
  /*
@@ -41,23 +41,13 @@ uint8_t PIX::run()
   // Calculating number of pixels
   // that need to be painted
   //################################
-  if (m_breceivedTestMailbox)
-  {
-      m_fDelta = abs(m_fNewZ- m_fPastZ);
-  //m_iLines = 1 + ((m_fDelta*l_fPixDelta - l_iPixLine)/l_iPixLine);
-      m_iLines = 1 + ((m_fDelta * l_fPixDelta * l_iPixLine - l_iPixLine) / l_iPixLine);
-      m_fPastZ = m_fNewZ; //- saving new m_fPastZ
-  }
 
-  /*if (count%2 == 0)
-  {
-      m_fNewZ = m_fNewZ + 5000;
-  }
-  else
-  {
-      m_fNewZ = m_fNewZ - 5000;
-  }
-  count++;*/
+   m_fDelta = abs(m_fNewZ- m_fPastZ);
+  //m_iLines = 1 + ((m_fDelta*l_fPixDelta - l_iPixLine)/l_iPixLine);
+   m_iLines = 1 + ((m_fDelta * l_fPixDelta * l_iPixLine - l_iPixLine) / l_iPixLine);
+   m_fPastZ = m_fNewZ; //- saving new m_fPastZ
+
+
   m_bMssgFlag = true;
   m_bRunFlag = false;
 
@@ -74,8 +64,6 @@ uint8_t PIX::setup()
 {
   m_fPastZ = 8500;//Falta calcular
   m_fNewZ = 8500;
-  count = 0;
-  //m_bRunFlag = false;
   m_bRunFlag = false;
   return(NO_ERR);
 };
@@ -91,7 +79,6 @@ uint8_t PIX::readMessage(st_Message *l_stNewMessage)
 {
     m_fNewZ = l_stNewMessage->std_u16IntData;
     m_bRunFlag = true;
-    m_breceivedTestMailbox = true;
     return(NO_ERR);
 };
 
