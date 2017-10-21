@@ -24,12 +24,14 @@ class PIX : public Task
     virtual uint8_t setup(void);
     virtual uint8_t readMessage(st_Message * l_stNewMessage);
     virtual uint8_t sendMessage(st_Message * l_stNewMessage);
+    int getPixelLines(void){return m_iLines;};
   protected:
-    float m_fPastZ;
-    float m_fNewZ;
+    uint16_t m_fPastZ;
+    uint16_t m_fNewZ;
     float m_fDelta;
     int m_iLines;
     bool m_bColor;
+    bool m_breceivedTestMailbox;
     int count;
   private:
     float l_fPixDelta;

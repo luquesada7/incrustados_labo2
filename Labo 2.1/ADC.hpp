@@ -27,7 +27,11 @@ class ADC : public Task
         ADC(uint16_t);
         virtual uint8_t run(void);
         virtual uint8_t setup(void);
+        virtual uint8_t sendMessage(st_Message * l_stNewMessage);
   protected:
+        //uint16_t ADC14Resultx;
+        //uint16_t ADC14Resulty;
+        //uint16_t ADC14Resultz;
   private:
 };
 

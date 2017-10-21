@@ -41,11 +41,15 @@ uint8_t PIX::run()
   // Calculating number of pixels
   // that need to be painted
   //################################
-  m_fDelta = abs(m_fNewZ- m_fPastZ);
+  if (m_breceivedTestMailbox)
+  {
+      m_fDelta = abs(m_fNewZ- m_fPastZ);
   //m_iLines = 1 + ((m_fDelta*l_fPixDelta - l_iPixLine)/l_iPixLine);
-  m_iLines = 1 + ((m_fDelta * l_fPixDelta * l_iPixLine - l_iPixLine) / l_iPixLine);
-  m_fPastZ = m_fNewZ; //- saving new m_fPastZ
-  if (count%2 == 0)
+      m_iLines = 1 + ((m_fDelta * l_fPixDelta * l_iPixLine - l_iPixLine) / l_iPixLine);
+      m_fPastZ = m_fNewZ; //- saving new m_fPastZ
+  }
+
+  /*if (count%2 == 0)
   {
       m_fNewZ = m_fNewZ + 5000;
   }
@@ -53,10 +57,9 @@ uint8_t PIX::run()
   {
       m_fNewZ = m_fNewZ - 5000;
   }
-  count++;
+  count++;*/
   m_bMssgFlag = true;
-
-  //m_bRunFlag = false;
+  m_bRunFlag = false;
 
   return(NO_ERR);
 };
@@ -86,8 +89,9 @@ uint8_t PIX::setup()
   //################################
 uint8_t PIX::readMessage(st_Message *l_stNewMessage)
 {
-    m_fNewZ = l_stNewMessage->std_fFloatData;
+    m_fNewZ = l_stNewMessage->std_u16IntData;
     m_bRunFlag = true;
+    m_breceivedTestMailbox = true;
     return(NO_ERR);
 };
 

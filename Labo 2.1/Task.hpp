@@ -23,6 +23,7 @@ class Task
 	    char                *getKey(void){return m_pKey;};
 	    void                setKey(char *l_pKey){m_pKey = l_pKey;};
 	    bool                getMssgFlag(){return m_bMssgFlag;};
+	    void                setMssgFlag(bool message){m_bMssgFlag = message;};
 	    bool                getRunFlag(){return m_bRunFlag;};
 	    void                setDestKey(char *l_pKey){m_stMssg.std_pDestKey = l_pKey;};
 	    st_Message m_stMssg;

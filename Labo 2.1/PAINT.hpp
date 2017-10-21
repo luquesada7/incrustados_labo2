@@ -31,6 +31,8 @@ class PAINT : public Task
     virtual uint8_t setup(void);
     virtual uint8_t readMessage(st_Message * l_stNewMessage);
     //virtual uint8_t sendMessage(st_Message * l_stNewMessage);
+    int getNewLine(void){return m_iNewLine;};
+    int getLastLine(void){return m_iLastLine;};
   protected:
     int m_iLastLine;
     int m_iPaintLines;

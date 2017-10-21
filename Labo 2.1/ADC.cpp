@@ -15,20 +15,26 @@
 
 ADC::ADC(uint16_t)
 {
+    //ADC14Resultx = 0U;
+    //ADC14Resulty = 0U;
+    //ADC14Resultz = 0U;
+
 };
 
 uint8_t ADC::run()
 {
 
     ADC14->CTL0 = ADC14->CTL0 | ADC14_CTL0_SC; // Start
-    P2->OUT ^= BIT6;
+    //P2->OUT ^= BIT6;
+    m_bMssgFlag = true;
     return (NO_ERR);
 };
 
 uint8_t ADC::setup()
 {
-    P2->DIR |= BIT6;
-    P2->OUT &= BIT6;
+    m_bRunFlag = true;
+    //P2->DIR |= BIT6;
+    //P2->OUT &= BIT6;
     // ****************************
     //         ADC CONFIG
     // ****************************
@@ -56,3 +62,14 @@ uint8_t ADC::setup()
 
     return (NO_ERR);
 };
+
+
+uint8_t ADC::sendMessage(st_Message *l_stNewMessage)
+{
+    //m_stMssg.std_u16IntData = ADC14->MEM[1];
+    *l_stNewMessage = m_stMssg;
+    return(NO_ERR);
+}
+
+
+

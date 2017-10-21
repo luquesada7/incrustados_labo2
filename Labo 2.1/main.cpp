@@ -35,6 +35,7 @@ uint16_t datapToAx = *pToAx;
 uint8_t Task::m_u8NextTaskID = 0; // - Init task ID
 volatile static uint64_t g_SystemTicks = 0; // - The system counter.
 Scheduler g_MainScheduler; // - Instantiate a Scheduler
+ADC TestADC(0);
 
 // ################################################################################
 //                                       MAIN
@@ -53,18 +54,22 @@ void main(void)
     LED BlueLED(BIT2);
     LED GreenLED(BIT1);
     LED RedLED(BIT0);
-    PIX Pixeles(0);
+    PIX Pixels(0);
     PAINT LCD(0);
     TEST Suma(0);
-    ADC TestADC(0);
+
 
     BlueLED.setKey("BLUE");
     GreenLED.setKey("GREEN");
     //Suma.setKey("SUMA");
     //Suma.setDestKey("GREEN");
-    Pixeles.setKey("PIXELES");
-    Pixeles.setDestKey("LCD");
+    TestADC.setKey("ADC");
+    TestADC.setDestKey("PIXELS");
+    Pixels.setKey("PIXELS");
+    Pixels.setDestKey("LCD");
     LCD.setKey("LCD");
+
+
 
 
     /*if ((&BlueLED)->getKey() == (&Suma)->m_stMssg.std_pDestKey)
@@ -86,11 +91,12 @@ void main(void)
     //- Attach the Tasks to the Scheduler;
     //g_MainScheduler.attach(&RedLED, 80);
     //g_MainScheduler.attach(&GreenLED, 40);
-    g_MainScheduler.attach(&BlueLED, 200);
+    //g_MainScheduler.attach(&BlueLED, 200);
     //g_MainScheduler.attach(&Suma, 50);
-    g_MainScheduler.attach(&Pixeles, 100);
+    g_MainScheduler.attach(&TestADC, 0);
+    g_MainScheduler.attach(&Pixels, 100);
     g_MainScheduler.attach(&LCD, 100);
-    //g_MainScheduler.attach(&TestADC, 0);
+
 
     // ################################################################################
     //                                 END TEST ZONE
@@ -109,6 +115,9 @@ void main(void)
             //- Only execute the tasks if one tick has passed.
             g_MainScheduler.m_u64ticks = g_SystemTicks;
             g_MainScheduler.run();
+            int pixel_Lines = Pixels.getPixelLines();
+            int newLine = LCD.getNewLine();
+            int LastLine = LCD.getLastLine();
         }
     }
 }
@@ -169,6 +178,7 @@ void Setup(void)
 	return;
 }
 
+
 extern "C"
 {
     // - Handle the Timer32 Interrupt
@@ -183,13 +193,16 @@ extern "C"
 	// - Handle the ADC14 Interrupt
 	void ADC14_IRQHandler(void)
     {
-        __disable_irq();
+        //__disable_irq();
         ADC14Resultz = ADC14->MEM[1];
-        ADC14Resulty = ADC14->MEM[2];
-        ADC14Resultx = ADC14->MEM[3];
+        TestADC.m_stMssg.std_u16IntData = ADC14->MEM[1];
+        //TestADC.m_bMssgFlag = true;
+        //ADC14Resulty = ADC14->MEM[2];
+        //ADC14Resultx = ADC14->MEM[3];
+        //TestADC.setMssgFlag(true);
         ADC14->CLRIFGR0 =  ADC14_CLRIFGR0_CLRIFG1
                 | ADC14_CLRIFGR0_CLRIFG2 | ADC14_CLRIFGR0_CLRIFG3;
-        __enable_irq();
+        //__enable_irq();
         return;
     }
 
