@@ -16,7 +16,7 @@
 
 PIX::PIX(uint16_t)
 {
-  l_fPixDelta = 128.0 / 7000.0;;
+  l_fPixDelta = 128.0 / 6000.0;;
   l_iPixLine = 128;
   //m_pKey = "PIX";
   //m_stMssg.std_pDestKey = "PAINT";
@@ -72,8 +72,8 @@ uint8_t PIX::run()
 
 uint8_t PIX::setup()
 {
-  m_fPastZ = 7500;//Falta calcular
-  m_fNewZ = 7500;
+  m_fPastZ = 8500;//Falta calcular
+  m_fNewZ = 8500;
   count = 0;
   //m_bRunFlag = false;
   m_bRunFlag = false;
