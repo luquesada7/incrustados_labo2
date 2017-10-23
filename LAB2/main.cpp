@@ -54,21 +54,15 @@ void main(void)
     //                                 TEST ZONE
     // ################################################################################
 
-    //P2->DIR |= BIT0 + BIT1 + BIT2; //Red LED
-
-    // - Instantiate two new Tasks
-    LED BlueLED(BIT2);
-    LED GreenLED(BIT1);
-    LED RedLED(BIT0);
+    // ###################################
+    // - Initiating new tasks	
+    // - Setting Task Keys
+    // - Setting Message Destination Keys
+    // ###################################
+	
     PIX Pixels(0);
     PAINT LCD(0);
-    TEST Suma(0);
 
-
-    BlueLED.setKey("BLUE");
-    GreenLED.setKey("GREEN");
-    //Suma.setKey("SUMA");
-    //Suma.setDestKey("GREEN");
     TestADC.setKey("ADC");
     TestADC.setDestKey("PIXELS");
     Pixels.setKey("PIXELS");
@@ -80,7 +74,7 @@ void main(void)
     Setup();
 
     //- Attach the Tasks to the Scheduler;
-    g_MainScheduler.attach(&TestADC, 0);
+    g_MainScheduler.attach(&TestADC, 0); // - TickInitValue = 0 for continuous or oneShot tasks
     g_MainScheduler.attach(&Pixels, 0);
     g_MainScheduler.attach(&LCD, 0);
 
