@@ -21,8 +21,6 @@ Graphics_Context g_sContext;
 
 //Task *g_aTaskPointers[NUMBER_OF_SLOTS] = {NULL};
 
-uint16_t ADC14Resultx = 0U;
-uint16_t ADC14Resulty = 0U;
 uint16_t ADC14Resultz = 0U;
 
 uint16_t *pToAx = &ADC14Resultx;
@@ -194,13 +192,9 @@ extern "C"
 	void ADC14_IRQHandler(void)
     {
         __disable_irq();
-        //ADC14Resultz = ADC14->MEM[1];
-        TestADC.m_stMssg.std_u16IntData = ADC14->MEM[1];
+        ADC14Resultz = ADC14->MEM[1];
+        TestADC.m_stMssg.std_u16IntData = ADC14Resultz;
         TestADC.m_bMssgFlag = true;
-        //TestADC.m_bMssgFlag = true;
-        //ADC14Resulty = ADC14->MEM[2];
-        //ADC14Resultx = ADC14->MEM[3];
-        //TestADC.setMssgFlag(true);
         ADC14->CLRIFGR0 =  ADC14_CLRIFGR0_CLRIFG1
                 | ADC14_CLRIFGR0_CLRIFG2 | ADC14_CLRIFGR0_CLRIFG3;
         __enable_irq();

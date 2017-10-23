@@ -18,8 +18,6 @@ PIX::PIX(uint16_t)
 {
   l_fPixDelta = 128.0 / 6000.0;;
   l_iPixLine = 128;
-  //m_pKey = "PIX";
-  //m_stMssg.std_pDestKey = "PAINT";
 }
 
 uint8_t PIX::run()
@@ -49,15 +47,6 @@ uint8_t PIX::run()
       m_fPastZ = m_fNewZ; //- saving new m_fPastZ
   }
 
-  /*if (count%2 == 0)
-  {
-      m_fNewZ = m_fNewZ + 5000;
-  }
-  else
-  {
-      m_fNewZ = m_fNewZ - 5000;
-  }
-  count++;*/
   m_bMssgFlag = true;
   m_bRunFlag = false;
 
@@ -74,7 +63,6 @@ uint8_t PIX::setup()
 {
   m_fPastZ = 8500;//Falta calcular
   m_fNewZ = 8500;
-  count = 0;
   //m_bRunFlag = false;
   m_bRunFlag = false;
   return(NO_ERR);

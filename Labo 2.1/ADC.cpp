@@ -65,7 +65,6 @@ uint8_t ADC::setup()
 
 uint8_t ADC::sendMessage(st_Message *l_stNewMessage)
 {
-    //m_stMssg.std_u16IntData = ADC14->MEM[1];
     m_bMssgFlag = false;
     *l_stNewMessage = m_stMssg;
     return(NO_ERR);

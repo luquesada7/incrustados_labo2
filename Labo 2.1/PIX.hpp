@@ -32,7 +32,6 @@ class PIX : public Task
     int m_iLines;
     bool m_bColor;
     bool m_breceivedTestMailbox;
-    int count;
   private:
     float l_fPixDelta;
     int l_iPixLine;
