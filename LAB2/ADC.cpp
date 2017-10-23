@@ -1,11 +1,11 @@
 /*
  * *******
- * Task 1: (.cpp)
+ * Task ADC: (.cpp)
  * *******
  * Message received: none
  * Activates ADC to read and convert accelerometer values
- * Message sent: none
- * ADC interrupt: Send a message to Task 2 with ADCResultx, ADCResulty, ADCResultz
+ * Message sent: ADCResultZ, ADCResultZ, ADCResultZ
+ * ADC interrupt: Send a message to Task "PIX" with ADCResultX, ADCResultY, ADCResultZ
  *
  * Created on: Oct 6, 2017
  * Authors: Luisa Fernanda Quesada &
@@ -15,11 +15,12 @@
 
 ADC::ADC(uint16_t)
 {
-    //ADC14Resultx = 0U;
-    //ADC14Resulty = 0U;
-    //ADC14Resultz = 0U;
-
 };
+
+// ****************************
+// Run:
+// - Activates ADC conversion
+// ****************************
 
 uint8_t ADC::run()
 {
@@ -28,11 +29,15 @@ uint8_t ADC::run()
     return (NO_ERR);
 };
 
+// ****************************
+// Setup:
+// - Sets ADC configuration
+// ****************************
+
 uint8_t ADC::setup()
 {
-    m_bRunFlag = true;
-    //P2->DIR |= BIT6;
-    //P2->OUT &= BIT6;
+    m_bRunFlag = true; // Set RunFlag high to run ADC continuously 
+
     // ****************************
     //         ADC CONFIG
     // ****************************
@@ -46,7 +51,6 @@ uint8_t ADC::setup()
     //  CONVERSION MEMORY REGISTER
     // *****************************
     // - Memory MCTL[0]-MCTL[2] for x, y, z accelerometer measurements
-    //
 
     ADC14->MCTL[1] = ADC14_MCTLN_INCH_11 | ADC14_MCTLN_VRSEL_0;
     ADC14->MCTL[2] = ADC14_MCTLN_INCH_13 | ADC14_MCTLN_VRSEL_0;
@@ -64,8 +68,7 @@ uint8_t ADC::setup()
 
 uint8_t ADC::sendMessage(st_Message *l_stNewMessage)
 {
-    //m_stMssg.std_u16IntData = ADC14->MEM[1];
-    m_bMssgFlag = false;
-    *l_stNewMessage = m_stMssg;
+    m_bMssgFlag = false; // Sent message, set m_bMssgFlag low
+    *l_stNewMessage = m_stMssg; // Ataches task message structure
     return(NO_ERR);
 }
