@@ -15,14 +15,20 @@
 
 PIX::PIX(uint16_t)
 {
-    l_fPixDelta = 128.0 / 5600.0;
-    ;
-    l_iPixLine = 128;
+    l_fPixDelta = 128.0 / 5600.0; // (# Pixel Lines on LCD)/(Change in Z accelerometer) 
+    l_iPixLine = 128; // (# Pixels per line in LCD)
 }
+
+//################################
+// Run
+// - Sets color to paint pixels
+// - Calculates numer of pixel lines
+//   to be painted
+//################################
 
 uint8_t PIX::run()
 {
-    m_bMinLimit = 0;
+    m_bMinLimit = 0; 
     m_bMaxLimit = 0;
 
     //################################
@@ -63,12 +69,11 @@ uint8_t PIX::run()
     // that need to be painted
     //################################
     m_fDelta = abs(m_fNewZ - m_fPastZ);
-    m_iLines = 1
-            + ((m_fDelta * l_fPixDelta * l_iPixLine - l_iPixLine) / l_iPixLine);
-    m_fPastZ = m_fNewZ; //- saving new m_fPastZ
+    m_iLines = 1 + ((m_fDelta * l_fPixDelta * l_iPixLine - l_iPixLine) / l_iPixLine);
+    m_fPastZ = m_fNewZ; //- Saving new m_fPastZ
 
-    m_bMssgFlag = true;
-    m_bRunFlag = false;
+    m_bMssgFlag = true; //- Sets MssgFlag high
+    m_bRunFlag = false; //- Sets RunFlag low
 
     return (NO_ERR);
 }
@@ -84,8 +89,8 @@ uint8_t PIX::setup()
 {
     m_bMinLimit = 0;
     m_bMaxLimit = 0;
-    m_fPastZ = 8700;
-    m_bRunFlag = false;
+    m_fPastZ = 8700; //- Z accelerometer value in vertical position (starting position)
+    m_bRunFlag = false; //- Sets RunFlag low
     return (NO_ERR);
 }
 ;
@@ -97,6 +102,7 @@ uint8_t PIX::setup()
 //   m_fNewZ
 // - Turns on RunFlag
 //################################
+
 uint8_t PIX::readMessage(st_Message *l_stNewMessage)
 {
     m_fNewZ = l_stNewMessage->std_u16IntData;
