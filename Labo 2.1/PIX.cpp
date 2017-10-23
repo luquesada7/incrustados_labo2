@@ -2,8 +2,8 @@
  * PIX.cpp
  *
  *  Created on: Oct 9, 2017
- *      Authors: Jose Pablo Martinez &
-                 Luisa Fernanda Quesada
+ *      Authors: Luisa Fernanda Quesada &
+ *               Jose Pablo Martinez
  */
 
  /*
@@ -39,13 +39,12 @@ uint8_t PIX::run()
   // Calculating number of pixels
   // that need to be painted
   //################################
-  if (m_breceivedTestMailbox)
-  {
-      m_fDelta = abs(m_fNewZ- m_fPastZ);
+
+   m_fDelta = abs(m_fNewZ- m_fPastZ);
   //m_iLines = 1 + ((m_fDelta*l_fPixDelta - l_iPixLine)/l_iPixLine);
-      m_iLines = 1 + ((m_fDelta * l_fPixDelta * l_iPixLine - l_iPixLine) / l_iPixLine);
-      m_fPastZ = m_fNewZ; //- saving new m_fPastZ
-  }
+   m_iLines = 1 + ((m_fDelta * l_fPixDelta * l_iPixLine - l_iPixLine) / l_iPixLine);
+   m_fPastZ = m_fNewZ; //- saving new m_fPastZ
+
 
   m_bMssgFlag = true;
   m_bRunFlag = false;
@@ -79,7 +78,6 @@ uint8_t PIX::readMessage(st_Message *l_stNewMessage)
 {
     m_fNewZ = l_stNewMessage->std_u16IntData;
     m_bRunFlag = true;
-    m_breceivedTestMailbox = true;
     return(NO_ERR);
 };
 
