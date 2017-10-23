@@ -30,24 +30,22 @@ class PAINT : public Task
     virtual uint8_t run(void);
     virtual uint8_t setup(void);
     virtual uint8_t readMessage(st_Message * l_stNewMessage);
-    //virtual uint8_t sendMessage(st_Message * l_stNewMessage);
     int getNewLine(void){return m_iNewLine;};
     int getLastLine(void){return m_iLastLine;};
     bool getMinLimit(void){return m_bMinLimit;};
     bool getMaxLimit(void){return m_bMaxLimit;};
   protected:
-    int m_iLastLine;
-    int m_iPaintLines;
-    int m_iLines;
-    int m_iNewLine;
-    bool m_bColor;
-    bool m_breceivedTestMailbox;
+    int m_iLastLine; //- Limit between sky and ground
+    int m_iPaintLines; //- Amount of lines to be painted on frame 
+    int m_iLines; //- Amount of total lines to be painted
+    int m_iNewLine; //- New limit between sky and ground
+    bool m_bColor; //- Paint Blue or Brown
     bool m_bMaxLimit;
     bool m_bMinLimit;
     Graphics_Rectangle m_stRect;
   private:
-    float l_fPixDelta;
-    int l_iPixLine;
+    float l_fPixDelta; //- (# Pixel Lines on LCD)/(Change in Z accelerometer)
+    int l_iPixLine; //- Pixels pero line in LCD
 };
 
 #endif /* PAINT_HPP_ */
