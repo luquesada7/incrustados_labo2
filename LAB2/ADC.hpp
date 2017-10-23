@@ -1,12 +1,7 @@
 /*
  * *******
- * ADC 1: (.h)
+ * Task ADC: (.h)
  * *******
- * Message received: none
- * Activates ADC to read and convert accelerometer values
- * Message sent: none
- * ADC interrupt: Send a message to Task 2 with ADCResultx, ADCResulty, ADCResultz
- *
  * Created on: Oct 6, 2017
  * Authors: Jose Pablo Martinez Hernandez &
  *          Luisa Fernanda Quesada Camacho
@@ -28,11 +23,7 @@ class ADC : public Task
         virtual uint8_t run(void);
         virtual uint8_t setup(void);
         virtual uint8_t sendMessage(st_Message * l_stNewMessage);
-        uint16_t m_ADCResult;
   protected:
-        //uint16_t ADC14Resultx;
-        //uint16_t ADC14Resulty;
-        //uint16_t ADC14Resultz;
   private:
 };
 
