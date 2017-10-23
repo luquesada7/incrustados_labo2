@@ -43,11 +43,11 @@ private:
     uint8_t m_u8OpenSlots; // - Available slots
     uint8_t m_u8NextSlot;  // - Next available slot
     st_TaskInfo m_aSchedule[NUMBER_OF_SLOTS]; // - Current schedule to be executed
-    st_TaskInfo m_aNextSchedule[NUMBER_OF_SLOTS]; // - Next schedule to be executed (not implemented)
-    uint8_t CalculateNextSchedule(void); // - Calculate next schedule tasks (not implemented)
-    uint8_t SortScheduleByPriority(Task * i_pSchedule); // - Sorts a schedule based on priority (not implemented)
+    //st_TaskInfo m_aNextSchedule[NUMBER_OF_SLOTS]; // - Next schedule to be executed (not implemented)
+    //uint8_t CalculateNextSchedule(void); // - Calculate next schedule tasks (not implemented)
+    //uint8_t SortScheduleByPriority(Task * i_pSchedule); // - Sorts a schedule based on priority (not implemented)
 
-    st_TaskInfo m_aTaskInfoStructs[NUMBER_OF_SLOTS]; // - Keeping all tasks saved
+    st_TaskInfo m_aTaskInfoStructs[NUMBER_OF_SLOTS]; // - Keeping all task structures saved
     uint8_t CollectMessages(void); // - Collects al messages from Tasks
     uint8_t DistributeMessages(void); // - Distributes messages between Tasks
     uint8_t InsertNode(st_Node *&st_pLinkedList, st_Message l_stNewMessage); // - Inserts node to linked list with mail
