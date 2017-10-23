@@ -44,8 +44,6 @@ class PAINT : public Task
     bool m_bMinLimit;
     Graphics_Rectangle m_stRect;
   private:
-    float l_fPixDelta; //- (# Pixel Lines on LCD)/(Change in Z accelerometer)
-    int l_iPixLine; //- Pixels pero line in LCD
 };
 
 #endif /* PAINT_HPP_ */
