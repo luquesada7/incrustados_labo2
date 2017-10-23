@@ -20,27 +20,21 @@ class Task
 		void                SetTaskPriority(uint8_t i_u8NewPriority){m_u8Priority = i_u8NewPriority;};
 	    virtual uint8_t     readMessage(st_Message *l_stNewMessage){return(0);};
 	    virtual uint8_t     sendMessage(st_Message *l_stNewMessage){return(0);};
-	    char                *getKey(void){return m_pKey;};
-	    void                setKey(char *l_pKey){m_pKey = l_pKey;};
-	    bool                getMssgFlag(){return m_bMssgFlag;};
-	    void                setMssgFlag(bool message){m_bMssgFlag = message;};
-	    bool                getRunFlag(){return m_bRunFlag;};
-	    void                setDestKey(char *l_pKey){m_stMssg.std_pDestKey = l_pKey;};
+	    char                *getKey(void){return m_pKey;}; //- Returns Task Key
+	    void                setKey(char *l_pKey){m_pKey = l_pKey;}; //- Sets Task Key
+	    bool                getMssgFlag(){return m_bMssgFlag;}; //- Gets MssgFlag
+	    void                setMssgFlag(bool message){m_bMssgFlag = message;}; //- Sets MssgFlag
+	    bool                getRunFlag(){return m_bRunFlag;}; //- Gets RunFlag
+	    void                setDestKey(char *l_pKey){m_stMssg.std_pDestKey = l_pKey;}; //- Sets Mssg Destination Key
 	    st_Message m_stMssg;
 	    bool m_bMssgFlag; // - Flag: Task has a message to send
 	private:
 	   static uint8_t m_u8NextTaskID;
 	   uint8_t m_u8Priority;
-       //bool m_bRunFlag; // - Flag: Task needs to be executed in next frame
-       //bool m_bMssgFlag; // - Flag: Task has a message to send
-
 	protected:
        bool m_bRunFlag; // - Flag: Task needs to be executed in next frame
-       //bool m_bMssgFlag; // - Flag: Task has a message to send
 	   bool m_bIsFinished;
-	   char *m_pKey;
-	   //st_Message m_stMssg;
-
+	   char *m_pKey; //- Task Key for identification
 };
 
 #endif /* TASK_HPP_ */
