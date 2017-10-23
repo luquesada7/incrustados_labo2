@@ -2,7 +2,9 @@
  * Scheduler.hpp
  *
  *  Created on: Aug 31, 2016
- *      Author: eortiz
+ *      Authors: Jose Pablo Martinez &
+ 		 Luisa Fernanda Quesada &
+		 Esteban Ortiz
  */
 
 #ifndef TASKS_SCHEDULER_HPP_
@@ -16,8 +18,6 @@
 
 #define NUMBER_OF_SLOTS 255
 #define NULL            0
-
-//extern Task *g_aTaskPointers[NUMBER_OF_SLOTS];
 
 // - This structure defines the Task Information
 struct st_TaskInfo {
@@ -52,7 +52,7 @@ private:
     uint8_t DistributeMessages(void); // - Distributes messages between Tasks
     uint8_t InsertNode(st_Node *&st_pLinkedList, st_Message l_stNewMessage); // - Inserts node to linked list with mail
     uint8_t DistributeEraseFirstNode(st_Node *&st_pLinkedList, st_Message l_stMessage); // - Erases first node of linked list
-    st_Node *m_pLinkedList;
+    st_Node *m_pLinkedList; // - Linked list of messages
 };
 
 
