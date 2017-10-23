@@ -14,8 +14,6 @@
 
 PAINT::PAINT(uint16_t)
 {
-    l_fPixDelta = 128.0 / 6000.0; // (# Pixel Lines on LCD)/(Change in Z accelerometer) 
-    l_iPixLine = 128; // Pixels per Line in LCD
 }
 
 //################################
