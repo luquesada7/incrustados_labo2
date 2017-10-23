@@ -36,10 +36,10 @@ uint8_t PAINT::run()
 
     /*If color is brown (true) calculate m_iNewLine
      and paint LCD from m_iLastLine to m_iNewLine*/
-    if (m_iLines > 3)
+    if (m_iLines > 5)
     {
-        m_iLines = m_iLines - 3;
-        m_iPaintLines = 3;
+        m_iLines = m_iLines - 5;
+        m_iPaintLines = 5;
     }
     else
     {
@@ -51,7 +51,7 @@ uint8_t PAINT::run()
     if (m_bColor)
     {
         m_iNewLine = m_iLastLine - m_iPaintLines;
-        if (m_iNewLine < 0)
+        if (m_iNewLine < 0 || m_bMaxLimit == 1)
         {
             m_stRect.yMin = 0;
             m_stRect.yMax = m_iLastLine;
@@ -71,7 +71,7 @@ uint8_t PAINT::run()
     {
         m_iNewLine = m_iLastLine + m_iPaintLines;
 
-        if (m_iNewLine > 128)
+        if (m_iNewLine > 128 || m_bMinLimit == 1)
         {
             m_stRect.yMin = m_iLastLine;
             m_stRect.yMax = 127;
@@ -137,6 +137,8 @@ uint8_t PAINT::readMessage(st_Message *l_stNewMessage)
 {
     m_iLines = l_stNewMessage->std_u16IntData;
     m_bColor = l_stNewMessage->std_bBoolData;
+    m_bMaxLimit = l_stNewMessage->std_bBoolData2;
+    m_bMinLimit = l_stNewMessage->std_bBoolData3;
     m_breceivedTestMailbox = true;
     m_bRunFlag = true;
     return (NO_ERR);

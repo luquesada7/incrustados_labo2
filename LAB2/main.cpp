@@ -40,6 +40,8 @@ int LastLine;
 uint16_t PastZ;
 uint16_t NewZ;
 bool Color;
+bool maxLimit;
+bool minLimit;
 
 // ################################################################################
 //                                       MAIN
@@ -104,8 +106,8 @@ void main(void)
             newLine = static_cast<int>(LCD.getNewLine());
             LastLine = static_cast<int>(LCD.getLastLine());
             Color = static_cast<bool>(Pixels.getColor());
-            //PastZ = Pixels.getPastZ();
-            //NewZ = Pixels.getNewZ();
+            minLimit = static_cast<bool>(LCD.getMinLimit());
+            maxLimit = static_cast<bool>(LCD.getMaxLimit());
         }
     }
 }
@@ -185,7 +187,7 @@ extern "C"
         ADC14Resultz = ADC14->MEM[1];
         PastADC14Resultz = TestADC.m_ADCResult;
         TestADC.m_ADCResult = ADC14Resultz;
-        if(abs(PastADC14Resultz-ADC14Resultz)>50)
+        if(abs(PastADC14Resultz-ADC14Resultz)>30)
         {
         TestADC.m_stMssg.std_u16IntData = ADC14Resultz;
         TestADC.m_bMssgFlag = true;

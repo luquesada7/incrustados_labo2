@@ -26,8 +26,6 @@ class PIX : public Task
     virtual uint8_t sendMessage(st_Message * l_stNewMessage);
     int getPixelLines(void){return m_iLines;};
     bool getColor(void){return m_bColor;};
-    //uint16_t getPastZ(void){return m_fPastZ;};
-    //uint16_t getNewZ(void){return m_fNewZ;);
   protected:
     uint16_t m_fPastZ;
     uint16_t m_fNewZ;
@@ -35,7 +33,8 @@ class PIX : public Task
     int m_iLines;
     bool m_bColor;
     bool m_breceivedTestMailbox;
-    int count;
+    bool m_bMaxLimit;
+    bool m_bMinLimit;
   private:
     float l_fPixDelta;
     int l_iPixLine;

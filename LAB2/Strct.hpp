@@ -16,6 +16,8 @@ struct st_Message
     uint16_t std_u16IntData; // - Mensaje de tipo integer
     float std_fFloatData; // - Mensaje de tipo float
     bool std_bBoolData; // - Mensaje de tipo bool
+    bool std_bBoolData2;
+    bool std_bBoolData3;
 };
 
 struct st_Node

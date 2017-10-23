@@ -15,13 +15,15 @@
 
 PIX::PIX(uint16_t)
 {
-    l_fPixDelta = 128.0 / 6000.0;
+    l_fPixDelta = 128.0 / 5600.0;
     ;
     l_iPixLine = 128;
 }
 
 uint8_t PIX::run()
 {
+    m_bMinLimit = 0;
+    m_bMaxLimit = 0;
 
     //################################
     // Selecting color to paint pixels
@@ -42,17 +44,19 @@ uint8_t PIX::run()
     // Limiting the newZ
     //################################
 
-    if (m_fNewZ > 11300)
+    /*if (m_fNewZ > 11350)
     {
-        m_fNewZ = 12000;
+        m_bMaxLimit = 1;
     }
     else
     {
-        if (m_fNewZ < 4850)
+        if (m_fNewZ < 5000)
         {
-            m_fNewZ = 4000;
+            m_bMinLimit = 1;
         }
-    }
+    }*/
+
+
 
     //################################
     // Calculating number of pixels
@@ -78,7 +82,9 @@ uint8_t PIX::run()
 
 uint8_t PIX::setup()
 {
-    m_fPastZ = 8075;
+    m_bMinLimit = 0;
+    m_bMaxLimit = 0;
+    m_fPastZ = 8700;
     m_bRunFlag = false;
     return (NO_ERR);
 }
@@ -112,6 +118,8 @@ uint8_t PIX::sendMessage(st_Message *l_stNewMessage)
 {
     m_stMssg.std_bBoolData = m_bColor;
     m_stMssg.std_u16IntData = m_iLines;
+    m_stMssg.std_bBoolData2 = m_bMaxLimit;
+    m_stMssg.std_bBoolData2 = m_bMinLimit;
     *l_stNewMessage = m_stMssg;
     m_bMssgFlag = false;
     return (NO_ERR);

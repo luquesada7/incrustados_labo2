@@ -33,6 +33,8 @@ class PAINT : public Task
     //virtual uint8_t sendMessage(st_Message * l_stNewMessage);
     int getNewLine(void){return m_iNewLine;};
     int getLastLine(void){return m_iLastLine;};
+    bool getMinLimit(void){return m_bMinLimit;};
+    bool getMaxLimit(void){return m_bMaxLimit;};
   protected:
     int m_iLastLine;
     int m_iPaintLines;
@@ -40,6 +42,8 @@ class PAINT : public Task
     int m_iNewLine;
     bool m_bColor;
     bool m_breceivedTestMailbox;
+    bool m_bMaxLimit;
+    bool m_bMinLimit;
     Graphics_Rectangle m_stRect;
   private:
     float l_fPixDelta;
