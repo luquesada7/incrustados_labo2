@@ -13,8 +13,6 @@
 
 // The main Setup function for the application
 
-//extern Task *g_aTaskPointers[NUMBER_OF_SLOTS];
-
 void Setup(void);
 
 #endif /* MAIN_HPP_ */
