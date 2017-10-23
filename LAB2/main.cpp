@@ -185,9 +185,11 @@ extern "C"
         ADC14Resultz = ADC14->MEM[1];
         PastADC14Resultz = TestADC.m_ADCResult;
         TestADC.m_ADCResult = ADC14Resultz;
-        if(abs(PastADC14Resultz-ADC14Resultz)>50){
+        if(abs(PastADC14Resultz-ADC14Resultz)>50)
+        {
         TestADC.m_stMssg.std_u16IntData = ADC14Resultz;
-        TestADC.m_bMssgFlag = true;}
+        TestADC.m_bMssgFlag = true;
+        }
         ADC14->CLRIFGR0 =  ADC14_CLRIFGR0_CLRIFG1
                 | ADC14_CLRIFGR0_CLRIFG2 | ADC14_CLRIFGR0_CLRIFG3;
         __enable_irq();

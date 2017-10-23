@@ -15,7 +15,7 @@
 
 PAINT::PAINT(uint16_t)
 {
-    l_fPixDelta = 128.0 / 7000.0;
+    l_fPixDelta = 128.0 / 6000.0;
     l_iPixLine = 128;
     //m_pKey = "PAINT";
 }

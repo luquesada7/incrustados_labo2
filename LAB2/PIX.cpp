@@ -42,15 +42,15 @@ uint8_t PIX::run()
     // Limiting the newZ
     //################################
 
-    if (m_fNewZ > 11400)
+    if (m_fNewZ > 11300)
     {
-        m_fNewZ = 11400;
+        m_fNewZ = 12000;
     }
     else
     {
-        if (m_fNewZ < 4800)
+        if (m_fNewZ < 4850)
         {
-            m_fNewZ = 4800;
+            m_fNewZ = 4000;
         }
     }
 
@@ -78,7 +78,7 @@ uint8_t PIX::run()
 
 uint8_t PIX::setup()
 {
-    m_fPastZ = 8000;
+    m_fPastZ = 8075;
     m_bRunFlag = false;
     return (NO_ERR);
 }
