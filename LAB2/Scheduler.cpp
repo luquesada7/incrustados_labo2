@@ -29,13 +29,10 @@ uint8_t Scheduler::attach(Task * i_ToAttach, uint64_t i_u64TickInterval)
     l_st_StructToAttach.u64ticks = this->m_u64ticks;
     l_st_StructToAttach.u64TickInterval = 0;
     l_st_StructToAttach.u64TickIntervalInitValue = i_u64TickInterval;
-    //g_aTaskPointers[m_u8NextSlot] = i_ToAttach;
 
     if((m_u8OpenSlots>0) && (m_u8NextSlot < NUMBER_OF_SLOTS))
     {
         m_aSchedule[m_u8NextSlot] =  l_st_StructToAttach;
-        //g_aTaskPointers[m_u8NextSlot] = i_ToAttach;
-        //--->> m_aTaskInfoStructs[m_u8NextSlot] = l_st_StructToAttach;
         m_u8OpenSlots--;
         m_u8NextSlot++;
     }
@@ -63,7 +60,6 @@ uint8_t Scheduler::run(void)
         if(l_pNextTask != ((uintptr_t) 0))
         {
             if(m_aSchedule[l_iNextTaskSlot].u64TickInterval == 0 && l_pNextTask->getRunFlag())
-            //if(m_aSchedule[l_iNextTaskSlot].u64TickInterval == 0)
             {
                 l_pNextTask->run();
             }
@@ -77,7 +73,6 @@ uint8_t Scheduler::run(void)
 
     CollectMessages();
     DistributeMessages();
-    //CalculateNextSchedule();
 
     return l_u8ReturnCode;
 }
@@ -109,7 +104,7 @@ uint8_t Scheduler::setup(void)
 // Al final se lo agrego! Para saber como va a
 // quedar
 // ##############################################
-
+/*
 uint8_t Scheduler::CalculateNextSchedule(void)
 {
     Task * l_pNextTask = (uintptr_t) 0;
@@ -143,12 +138,7 @@ uint8_t Scheduler::CalculateNextSchedule(void)
         }
     }
     return(NO_ERR);
-}
-
-uint8_t Scheduler::SortScheduleByPriority(Task * i_pSchedule)
-{
-    return(NO_ERR);
-}
+} */
 
 // ##############################################
 // Collects messages from Tasks on m_aSchedule
@@ -165,7 +155,6 @@ uint8_t Scheduler::CollectMessages(void)
     for(l_iCounter = 0; l_iCounter < NUMBER_OF_SLOTS; l_iCounter++)
     {
         l_pNextSender = static_cast<Task *> (m_aSchedule[l_iCounter].pToAttach);
-        //l_pNextSender = g_aTaskPointers[l_iCounter];
         if(l_pNextSender != ((uintptr_t) 0))
         {
             if (l_pNextSender->getMssgFlag())
@@ -209,7 +198,6 @@ uint8_t Scheduler::InsertNode(st_Node *&l_pLinkedList, st_Message l_stNewMessage
     {
         l_stAux2->std_pnext = l_stNewNode;
     }
-    //l_pLinkedList = l_stNewNode; // -adding node at the beginning of the list
     l_stNewNode->std_pnext = l_stAux1;
 
     return(NO_ERR);
@@ -243,14 +231,13 @@ uint8_t Scheduler::DistributeMessages(void)
 
 uint8_t Scheduler::DistributeEraseFirstNode(st_Node *&l_pLinkedList, st_Message l_stMessage)
 {
-    st_Node *l_stAux = l_pLinkedList; // Guarda el primer elemennto de la lista
-    l_stMessage = l_stAux->std_stMssg; // Guarda el mensaje del primer elemento de la lista
-    char *l_pKey = l_stMessage.std_pDestKey; // Guarda el "key" o dirreccion
+    st_Node *l_stAux = l_pLinkedList; //- Saves first node of list temporarily
+    l_stMessage = l_stAux->std_stMssg; //- Saves message on first node temporarily
+    char *l_pKey = l_stMessage.std_pDestKey; //- Destination Key of message 
     Task *l_pTaskPointer = NULL; //
 
     for(int l_iCounter = 0; l_iCounter < NUMBER_OF_SLOTS; l_iCounter++)
     {
-        //-->l_pTaskPointer = g_aTaskPointers[l_iCounter];
         l_pTaskPointer = static_cast<Task *> (m_aSchedule[l_iCounter].pToAttach);
         if(l_pTaskPointer != ((uintptr_t) 0))
         {
