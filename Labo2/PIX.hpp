@@ -9,34 +9,35 @@
 #ifndef PIX_HPP_
 #define PIX_HPP_
 #define __NOP __nop
-#include <ti/devices/msp432p4xx/inc/msp.h>
 #include "Task.hpp"
-#include "Strct.hpp"
+#include <stdlib.h>
 
 #define NUMBER_OF_SLOTS 255
 #define NULL            0
 
-/* Variables globales del programa */
-extern st_Node *g_pLinkedList;
-extern Task * g_aTaskPointers[NUMBER_OF_SLOTS];
 
 class PIX : public Task
 {
   public:
-    PIX(void);
+    PIX(uint16_t);
     virtual uint8_t run(void);
     virtual uint8_t setup(void);
     virtual uint8_t readMessage(st_Message * l_stNewMessage);
     virtual uint8_t sendMessage(st_Message * l_stNewMessage);
+    int getPixelLines(void){return m_iLines;};
+    bool getColor(void){return m_bColor;};
   protected:
-    float m_fPastZ;
-    float m_fNewZ;
+    uint16_t m_fPastZ;
+    uint16_t m_fNewZ;
     float m_fDelta;
     int m_iLines;
     bool m_bColor;
+    //bool m_breceivedTestMailbox;
+    bool m_bMaxLimit;
+    bool m_bMinLimit;
   private:
-    const float l_fPixDelta;
-    const int l_iPixLine;
+    float l_fPixDelta;
+    int l_iPixLine;
 };
 
 #endif /* PIX_HPP_ */
