@@ -4,6 +4,7 @@
 #include "LcdDriver/HAL_MSP_EXP432P401R_Crystalfontz128x128_ST7735.h"
 #include "LcdDriver/Crystalfontz128x128_ST7735.h"
 #include <stdlib.h>
+#include <math.h>
 
 /* Graphic library context */
 Graphics_Context g_sContext;
@@ -15,6 +16,7 @@ uint16_t ADC14Resultz = 0U;
 
 uint16_t  m_fPastZ = 7500;
 uint16_t  m_fNewZ = 7500;
+
 float m_fDelta;
 int m_iLines;
 int m_iNewLine;
@@ -24,58 +26,66 @@ bool m_bColor;
 
 int m_iLastLine = 75;
 int m_iPixels;
-int Z_1;
-int Z_2;
-int X_1;
-int X_2;
+int m_iZ;
+int m_iX;
+int Hip;
 uint16_t l_uint16tulValue;
 Graphics_Rectangle l_stRect;
 Graphics_Rectangle l_stRect1;
+
+
 
 void Setup(void);
 
 int main(void)
 {
+    //l_stRect1.xMin = 0;
+    //l_stRect1.xMax = 0;
+    //l_stRect1.yMin = 0;
+    //l_stRect1.yMax = 0;
     Setup();
     while (1)
     {
         int j;
-        X_1 = 128*(ADC14Resultx-8250)/(3100.0);
-        Z_1 = 128*(11400-ADC14Resultz)/(6500.0);
+        m_iX = 128*(ADC14Resultx-8250)/(3100.0);
+        m_iZ = 128*(11400-ADC14Resultz)/(6500.0);
         l_stRect.xMin = 0;
         l_stRect.xMax = 127;
-        if(X_1>0)
+        if(m_iX>0)
         {
+
             l_stRect.xMin = 0;
             l_stRect.xMax = 127;
             l_stRect.yMin = -1;
-            l_stRect.yMax =  Z_1 - X_1;
+            l_stRect.yMax =  m_iZ - m_iX;
             l_uint16tulValue = 0X00FF; //blue
             Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &l_stRect, l_uint16tulValue);
 
 
-            for (j = 0; j <= 2*X_1; j++)
+            for (j = 0; j <= 2*m_iX; j++)
             {
                 l_stRect.xMin = 0;
-                l_stRect.xMax = (128/(2.0*X_1))*j;
-                l_stRect.yMin = Z_1 - X_1 + j - 1;
-                l_stRect.yMax = Z_1 - X_1 + j;
+                l_stRect.xMax = (128/(2.0*m_iX))*j;
+                l_stRect.yMin = m_iZ - m_iX + j - 1;
+                l_stRect.yMax = m_iZ - m_iX + j;
 
-                //l_stRect1.xMin = l_stRect.xMax;
-                //l_stRect1.xMax = l_stRect.xMax+1;
-                //l_stRect1.yMin = Z_1 - X_1 + j-2;
-                //l_stRect1.yMax = Z_1 - X_1 + j-1;
+                Hip = (sqrt(128*128 + 4*m_iX*m_iX))/(2.0*m_iX);
+
+                l_stRect1.xMin = l_stRect.xMax ;
+                l_stRect1.xMax = l_stRect.xMax + Hip;
+                l_stRect1.yMin = m_iZ - m_iX + j - 2;
+                l_stRect1.yMax = m_iZ - m_iX + j - 1;
 
                 l_uint16tulValue = 0XAA00; //brown
                 Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &l_stRect, l_uint16tulValue);
 
-                //l_uint16tulValue = 0XFFFF; //white
-                //Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &l_stRect1, l_uint16tulValue);
+                l_uint16tulValue = 0XFFFF; //white
+                Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &l_stRect1, l_uint16tulValue);
 
-                l_stRect.xMin = (128/(2.0*X_1))*j;
+                l_stRect.xMin = (128/(2.0*m_iX))*j;
                 l_stRect.xMax = 128;
-                l_stRect.yMin = Z_1 - X_1 + j -1;
-                l_stRect.yMax = Z_1 - X_1 + j;
+                l_stRect.yMin = m_iZ - m_iX + j - 3;
+                l_stRect.yMax = m_iZ - m_iX + j - 2;
                 l_uint16tulValue = 0X00FF; //blue
                 Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &l_stRect, l_uint16tulValue);
             }
@@ -83,116 +93,78 @@ int main(void)
 
             l_stRect.xMin = 0;
             l_stRect.xMax = 127;
-            l_stRect.yMin = Z_1 + X_1;
+            l_stRect.yMin = m_iZ + m_iX;
             l_stRect.yMax = 128;
             l_uint16tulValue = 0XAA00; //brown
             Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &l_stRect, l_uint16tulValue);
 
+        }
+        else if (m_iX<0)
+        {
+            l_stRect.xMin = 0;
+            l_stRect.xMax = 127;
+            l_stRect.yMin = -1;
+            l_stRect.yMax =  m_iZ + m_iX ;
+            l_uint16tulValue = 0X00FF; //blue
+            Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &l_stRect, l_uint16tulValue);
+
+            for (j = 0; j <= 2*-m_iX; j++)
+            {
+                l_stRect.xMin = 0;
+                l_stRect.xMax = 128-(128/(-2.0*m_iX))*j;
+                l_stRect.yMin = m_iZ + m_iX + j - 1;
+                l_stRect.yMax = m_iZ + m_iX + j ;
+                l_uint16tulValue = 0X00FF; //blue
+                Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &l_stRect, l_uint16tulValue);
+
+                Hip = (sqrt(128*128 + 4*m_iX*m_iX))/(-2.0*m_iX);
+
+                l_stRect1.xMin = l_stRect.xMax;
+                l_stRect1.xMax = l_stRect.xMax + Hip;
+                l_stRect1.yMin = m_iZ + m_iX + j ;
+                l_stRect1.yMax = m_iZ + m_iX + j + 1;
+                l_uint16tulValue = 0XFFFF; //white
+                Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &l_stRect1, l_uint16tulValue);
+
+
+                l_stRect.xMin = 128-(128/(-2.0*m_iX))*j-Hip;
+                l_stRect.xMax = 128;
+                l_stRect.yMin = m_iZ + m_iX + j + 1;
+                l_stRect.yMax = m_iZ + m_iX + j + 2;
+                l_uint16tulValue = 0XAA00; //brown
+                Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &l_stRect, l_uint16tulValue);
+            }
+
+            l_stRect.xMin = 0;
+            l_stRect.xMax = 127;
+            l_stRect.yMin = m_iZ - m_iX + 2 ;
+            l_stRect.yMax = 128;
+            l_uint16tulValue = 0XAA00; //brown
+            Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &l_stRect, l_uint16tulValue);
         }
         else
         {
             l_stRect.xMin = 0;
             l_stRect.xMax = 127;
             l_stRect.yMin = -1;
-            l_stRect.yMax =  Z_1 + X_1;
+            l_stRect.yMax =  m_iZ + m_iX;
             l_uint16tulValue = 0X00FF; //blue
             Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &l_stRect, l_uint16tulValue);
 
-            for (j = 0; j <= 2*-X_1; j++)
-            {
-                l_stRect.xMin = 0;
-                l_stRect.xMax = 128-(128/(-2.0*X_1))*j;
-                l_stRect.yMin = Z_1 + X_1 + j - 1;
-                l_stRect.yMax = Z_1 + X_1 + j;
-                l_uint16tulValue = 0X00FF; //brown
-                Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &l_stRect, l_uint16tulValue);
-                l_stRect.xMin = 128-(128/(-2.0*X_1))*j;
-                l_stRect.xMax = 128;
-                l_stRect.yMin = Z_1 + X_1 + j -1;
-                l_stRect.yMax = Z_1 + X_1 + j;
-                l_uint16tulValue = 0XAA00; //blue
-                Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &l_stRect, l_uint16tulValue);
-            }
+            l_stRect1.xMin = 0;
+            l_stRect1.xMax = 127;
+            l_stRect1.yMin = m_iZ - m_iX  ;
+            l_stRect1.yMax = m_iZ - m_iX + 1;
+            l_uint16tulValue = 0XFFFF; //white
+            Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &l_stRect1, l_uint16tulValue);
 
             l_stRect.xMin = 0;
             l_stRect.xMax = 127;
-            l_stRect.yMin = Z_1 - X_1;
+            l_stRect.yMin = m_iZ - m_iX + 1;
             l_stRect.yMax = 128;
             l_uint16tulValue = 0XAA00; //brown
             Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &l_stRect, l_uint16tulValue);
         }
-
-        //l_stRect.yMax = m_iLastLine + iy_1;
-        //l_stRect.yMin = m_iLastLine - iy_1;
-        //l_uint16tulValue = 0XFFFF; //blue
-        //Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &l_stRect,
-        //                                           l_uint16tulValue);
-
-
-        /*if (m_fNewZ > m_fPastZ)
-        {
-            m_bColor = true;
-        }
-        else
-        {
-            m_bColor = false;
-        }
-
-        //################################
-        // Calculating number of pixels
-        // that need to be painted
-        //################################
-        m_fDelta = abs(m_fNewZ - m_fPastZ);
-        m_iLines = 1 + ((m_fDelta * l_fPixDelta * l_iPixLine - l_iPixLine) / l_iPixLine);
-        //m_iLines = 1 + ((m_fDelta*l_fPixDelta - l_iPixLine)/l_iPixLine);
-
-        l_stRect.xMin = 0;
-        l_stRect.xMax = 127;
-
-
-        if (m_bColor)
-        {
-            m_iNewLine = m_iLastLine - m_iLines;
-            if (m_iNewLine < 0)
-            {
-                l_stRect.yMin = 0;
-                l_stRect.yMax = m_iLastLine;
-            }
-            else
-            {
-                l_stRect.yMin = m_iNewLine;
-                l_stRect.yMax = m_iLastLine;
-            }
-
-            l_uint16tulValue = 0XAA00; //brown
-
-            Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &l_stRect,
-                                            l_uint16tulValue);
-        }
-        else
-        {
-            m_iNewLine = m_iLastLine + m_iLines;
-
-            if (m_iNewLine > 128)
-            {
-                l_stRect.yMin = m_iLastLine;
-                l_stRect.yMax = 127;
-            }
-            else
-            {
-                l_stRect.yMin = m_iLastLine;
-                l_stRect.yMax = m_iNewLine;
-            }
-
-            l_uint16tulValue = 0X00FF; //blue
-
-            Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &l_stRect,
-                                            l_uint16tulValue);
-        }*/
-
-        //m_iLastLine = m_iNewLine;
-        //m_fPastZ = m_fNewZ;
-        //m_fNewZ = ADC14Resultz;
     }
 // return 0;
 }
