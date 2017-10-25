@@ -27,30 +27,30 @@ uint8_t HOR::run()
     // Calcula los cambios en Z
     m_iZ = 128*(11400-m_uint16ADC14Rz)/(6500.0);
 
-    if(m_iX>0)
+    if(m_iX<0)
     {
         // Si el cambio es a la derecha
         // Rectangulo superior del cielo
         m_stRect.yMin = -1;
-        m_stRect.yMax =  m_iZ - m_iX;
+        m_stRect.yMax =  m_iZ + m_iX;
         m_uint16tulValue = 0X00FF; //blue
         Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &m_stRect, m_uint16tulValue);
 
         // Rectangulo con línea de inclinacion
-        for (j = 0; j <= 2*m_iX; j++)
+        for (j = 0; j <= -2*m_iX; j++)
         {
             m_stRect2.xMin = 0;
-            m_stRect2.xMax = (128/(2.0*m_iX))*j;
-            m_stRect2.yMin = m_iZ - m_iX + j - 1;
-            m_stRect2.yMax = m_iZ - m_iX + j;
+            m_stRect2.xMax = (128/(-2.0*m_iX))*j;
+            m_stRect2.yMin = m_iZ + m_iX + j - 1;
+            m_stRect2.yMax = m_iZ + m_iX + j;
 
             // Calcula la hipotenusa del triangulo formado y discretiza el valor a 2.0*m_iX
-            m_iHip = (sqrt(128*128 + 4*m_iX*m_iX))/(2.0*m_iX);
+            m_iHip = (sqrt(128*128 + 4*m_iX*m_iX))/(-2.0*m_iX);
             // Dibuja la línea blanca
             m_stRect1.xMin = m_stRect2.xMax ;
             m_stRect1.xMax = m_stRect2.xMax + m_iHip;
-            m_stRect1.yMin = m_iZ - m_iX + j - 2;
-            m_stRect1.yMax = m_iZ - m_iX + j - 1;
+            m_stRect1.yMin = m_iZ + m_iX + j - 2;
+            m_stRect1.yMax = m_iZ + m_iX + j - 1;
 
             m_uint16tulValue = 0XAA00; //brown
             Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &m_stRect2, m_uint16tulValue);
@@ -58,57 +58,57 @@ uint8_t HOR::run()
             m_uint16tulValue = 0XFFFF; //white
             Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &m_stRect1, m_uint16tulValue);
 
-            m_stRect2.xMin = (128/(2.0*m_iX))*j;
+            m_stRect2.xMin = (128/(-2.0*m_iX))*j;
             m_stRect2.xMax = 128;
-            m_stRect2.yMin = m_iZ - m_iX + j - 3;
-            m_stRect2.yMax = m_iZ - m_iX + j - 2;
+            m_stRect2.yMin = m_iZ + m_iX + j - 3;
+            m_stRect2.yMax = m_iZ + m_iX + j - 2;
             m_uint16tulValue = 0X00FF; //blue
             Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &m_stRect2, m_uint16tulValue);
         }
 
-        // Rectangulo inferio de la tierra
-        m_stRect.yMin = m_iZ + m_iX;
+        // Rectangulo inferior de la tierra
+        m_stRect.yMin = m_iZ - m_iX;
         m_stRect.yMax = 128;
         m_uint16tulValue = 0XAA00; //brown
         Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &m_stRect, m_uint16tulValue);
 
     }
-    else if (m_iX<0)
+    else if (m_iX>0)
     {
         // Cuando se inclina a la izquierda
         m_stRect.yMin = -1;
-        m_stRect.yMax =  m_iZ + m_iX ;
+        m_stRect.yMax =  m_iZ - m_iX ;
         m_uint16tulValue = 0X00FF; //blue
         Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &m_stRect, m_uint16tulValue);
 
-        for (j = 0; j <= 2*-m_iX; j++)
+        for (j = 0; j <= 2*m_iX; j++)
         {
             m_stRect2.xMin = 0;
-            m_stRect2.xMax = 128-(128/(-2.0*m_iX))*j;
-            m_stRect2.yMin = m_iZ + m_iX + j - 1;
-            m_stRect2.yMax = m_iZ + m_iX + j ;
+            m_stRect2.xMax = 128-(128/(2.0*m_iX))*j;
+            m_stRect2.yMin = m_iZ - m_iX + j - 1;
+            m_stRect2.yMax = m_iZ - m_iX + j ;
             m_uint16tulValue = 0X00FF; //blue
             Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &m_stRect2, m_uint16tulValue);
 
-            m_iHip = (sqrt(128*128 + 4*m_iX*m_iX))/(-2.0*m_iX);
+            m_iHip = (sqrt(128*128 + 4*m_iX*m_iX))/(2.0*m_iX);
 
             m_stRect1.xMin = m_stRect2.xMax;
             m_stRect1.xMax = m_stRect2.xMax + m_iHip;
-            m_stRect1.yMin = m_iZ + m_iX + j ;
-            m_stRect1.yMax = m_iZ + m_iX + j + 1;
+            m_stRect1.yMin = m_iZ - m_iX + j ;
+            m_stRect1.yMax = m_iZ - m_iX + j + 1;
             m_uint16tulValue = 0XFFFF; //white
             Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &m_stRect1, m_uint16tulValue);
 
 
-            m_stRect2.xMin = 128-(128/(-2.0*m_iX))*j-m_iHip;
+            m_stRect2.xMin = 128-(128/(2.0*m_iX))*j-m_iHip;
             m_stRect2.xMax = 128;
-            m_stRect2.yMin = m_iZ + m_iX + j + 1;
-            m_stRect2.yMax = m_iZ + m_iX + j + 2;
+            m_stRect2.yMin = m_iZ - m_iX + j + 1;
+            m_stRect2.yMax = m_iZ - m_iX + j + 2;
             m_uint16tulValue = 0XAA00; //brown
             Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &m_stRect2, m_uint16tulValue);
         }
 
-        m_stRect.yMin = m_iZ - m_iX + 2 ;
+        m_stRect.yMin = m_iZ + m_iX + 2 ;
         m_stRect.yMax = 128;
         m_uint16tulValue = 0XAA00; //brown
         Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &m_stRect, m_uint16tulValue);
