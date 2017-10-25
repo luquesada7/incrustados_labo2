@@ -40,6 +40,7 @@ class HOR : public Task
     uint16_t  m_uint16tulValue;
     Graphics_Rectangle m_stRect;
     Graphics_Rectangle m_stRect1;
+    Graphics_Rectangle m_stRect2;
   private:
 };
 

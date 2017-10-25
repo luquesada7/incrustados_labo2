@@ -3,7 +3,6 @@
 LED::LED(uint16_t i_BITN)
 {
 	m_u16BITN = i_BITN;
-	m_bRunFlag = false;
 	//this->m_pKey = "LED";
 	//this->m_stMssg.std_pDestKey = "DEFAULT";
 	//setKey("LED");
@@ -28,7 +27,7 @@ uint8_t LED::run()
         P2->OUT ^= m_u16BITN;
     }*/
 
-    m_bRunFlag = false;
+    //m_bRunFlag = false;
     //#########################
     return(NO_ERR);
 }
@@ -40,21 +39,9 @@ uint8_t LED::setup()
     //m_bRunFlag = false;
     P2->DIR |= m_u16BITN; //Red LED
     P2->OUT &= m_u16BITN; // Initialize the LED Value
-    return(NO_ERR);
-}
-
-uint8_t LED::readMessage(st_Message *l_stNewMessage)
-{
-    m_breceivedTestMailbox = l_stNewMessage->std_bBoolData;
     m_bRunFlag = true;
     return(NO_ERR);
 }
 
-/*uint8_t LED::sendMessage(st_Message *l_stNewMessage)
-{
-    m_stMssg.std_bBoolData = m_bsendTestMailbox;
-    *l_stNewMessage = m_stMssg;
-    m_bMssgFlag = false;
-    return(NO_ERR);
-}*/
+
 

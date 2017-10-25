@@ -62,6 +62,10 @@ void main(void)
     PIX Pixels(0);
     PAINT LCD(0);
     HOR HV(0);
+    ;
+    LED BlueLED(BIT2);
+    LED GreenLED(BIT1);
+    LED RedLED(BIT0);
 
     TaskADC.setKey("ADC");
     TaskADC.setDestKey("HORIZONTE");
@@ -76,6 +80,9 @@ void main(void)
 
     //- Attach the Tasks to the Scheduler;
     g_MainScheduler.attach(&TaskADC, 0); // - TickInitValue = 0 for continuous or oneShot tasks
+    g_MainScheduler.attach(&RedLED, 40); // - TickInitValue = 0 for continuous or oneShot tasks
+    g_MainScheduler.attach(&GreenLED, 80);
+    g_MainScheduler.attach(&BlueLED, 160);
     //g_MainScheduler.attach(&Pixels, 0);
     //g_MainScheduler.attach(&LCD, 0);
     g_MainScheduler.attach(&HV, 0);
