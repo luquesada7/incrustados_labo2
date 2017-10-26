@@ -12,8 +12,6 @@
 #include "ADC.hpp"
 #include "TEST.hpp"
 #include "Strct.hpp"
-#include "PAINT.hpp"
-#include "PIX.hpp"
 #include "HOR.hpp"
 #include <stdio.h>
 
@@ -28,19 +26,10 @@ Graphics_Context g_sContext;
 
 uint16_t ADC14Resultz = 0U;
 uint16_t ADC14Resultx = 0U;
-uint16_t PastADC14Resultz = 0U;
 uint8_t Task::m_u8NextTaskID = 0; // - Init task ID
 volatile static uint64_t g_SystemTicks = 0; // - The system counter.
 Scheduler g_MainScheduler; // - Instantiate a Scheduler
 ADC TaskADC(0);
-//int pixel_Lines;
-//int newLine;
-//int LastLine;
-//uint16_t PastZ;
-//uint16_t NewZ;
-//bool Color;
-//bool maxLimit;
-//bool minLimit;
 
 // ################################################################################
 //                                       MAIN
@@ -59,19 +48,14 @@ void main(void)
     // - Setting Message Destination Keys
     // ###################################
 	
-    PIX Pixels(0);
-    PAINT LCD(0);
+
     HOR HV(0);
-    ;
     LED BlueLED(BIT2);
     LED GreenLED(BIT1);
     LED RedLED(BIT0);
 
     TaskADC.setKey("ADC");
     TaskADC.setDestKey("HORIZONTE");
-    Pixels.setKey("PIXELS");
-    Pixels.setDestKey("LCD");
-    LCD.setKey("LCD");
     HV.setKey("HORIZONTE");
 
 
@@ -83,8 +67,6 @@ void main(void)
     g_MainScheduler.attach(&RedLED, 40); // - TickInitValue = 0 for continuous or oneShot tasks
     g_MainScheduler.attach(&GreenLED, 80);
     g_MainScheduler.attach(&BlueLED, 160);
-    //g_MainScheduler.attach(&Pixels, 0);
-    //g_MainScheduler.attach(&LCD, 0);
     g_MainScheduler.attach(&HV, 0);
 
 
@@ -105,12 +87,6 @@ void main(void)
             //- Only execute the tasks if one tick has passed.
             g_MainScheduler.m_u64ticks = g_SystemTicks;
             g_MainScheduler.run();
-            //pixel_Lines = static_cast<int>(Pixels.getPixelLines());
-            //newLine = static_cast<int>(LCD.getNewLine());
-            //LastLine = static_cast<int>(LCD.getLastLine());
-            //Color = static_cast<bool>(Pixels.getColor());
-            //minLimit = static_cast<bool>(LCD.getMinLimit());
-            // maxLimit = static_cast<bool>(LCD.getMaxLimit());
         }
     }
 }
@@ -164,10 +140,6 @@ void Setup(void)
     /* Initializes graphics context */
     Graphics_initContext(&g_sContext, &g_sCrystalfontz128x128,
                          &g_sCrystalfontz128x128_funcs);
-    Graphics_setForegroundColor(&g_sContext, GRAPHICS_COLOR_RED);
-    Graphics_setBackgroundColor(&g_sContext, GRAPHICS_COLOR_RED);
-    GrContextFontSet(&g_sContext, &g_sFontFixed6x8);
-
 	return;
 }
 
