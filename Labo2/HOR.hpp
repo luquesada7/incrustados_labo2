@@ -32,12 +32,12 @@ class HOR : public Task
     virtual uint8_t setup(void);
     virtual uint8_t readMessage(st_Message * l_stNewMessage);
   protected:
-    int m_iZ;
-    int m_iX;
-    int m_iHip;
-    uint16_t m_uint16ADC14Rx;
-    uint16_t m_uint16ADC14Rz;
-    uint16_t  m_uint16tulValue;
+    int m_iZ; //- Amount of lines to be painted on frame for Z axis 
+    int m_iX; //- Amount of lines to be painted on frame for X axis 
+    int m_iHip; // Hypotenuse of the triangle
+    uint16_t m_uint16ADC14Rx; // Analog Digital Converter result in X axis
+    uint16_t m_uint16ADC14Rz; // Analog Digital Converter result in Z axis
+    uint16_t  m_uint16tulValue; //- Paint Blue, Brown or White
     Graphics_Rectangle m_stRect;
     Graphics_Rectangle m_stRect1;
     Graphics_Rectangle m_stRect2;
