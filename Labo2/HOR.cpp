@@ -22,43 +22,70 @@ HOR::HOR(uint16_t)
 
 uint8_t HOR::run()
 {
+    //################################
+    // Internal counter
+    //################################
     int j;
-    // Calcula los cambios en X
+    
+    //################################
+    // - Calculate the lines to be
+    //   painted on the x-axis (roll) 
+    //   and z-axis (scroll), from the 
+    //   line formed by the extreme 
+    //   values of the ADC and normalized 
+    //   to 128 (number of pixels)
+    //################################
+   
     m_iX = 128*(m_uint16ADC14Rx-8250)/(3100.0);
     // Calcula los cambios en Z
     m_iZ = 128*(11400-m_uint16ADC14Rz)/(6500.0);
 
+    
     if(m_iX<0)
     {
-        // Si el cambio es a la derecha
-        // Rectangulo superior del cielo
+        //################################
+        // - Roll to the left 
+        //    Upper rectangule the sky
+        //    Middle rectangule, the division
+        //    Lower rectangule the ground
+        //################################
+        
+        // Paint the upper rectangule (sky)
         m_stRect.yMin = -1;
         m_stRect.yMax =  m_iZ + m_iX;
-        m_uint16tulValue = 0X00FF; //blue
+        m_uint16tulValue = 0X00FF; 
         Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &m_stRect, m_uint16tulValue);
 
-        // Rectangulo con línea de inclinacion
+        //    Middle rectangule, the division
         for (j = 0; j <= -2*m_iX; j++)
         {
+            // Lower triangule (ground)
             m_stRect2.xMin = 0;
             m_stRect2.xMax = (128/(-2.0*m_iX))*j;
             m_stRect2.yMin = m_iZ + m_iX + j - 1;
             m_stRect2.yMax = m_iZ + m_iX + j;
-
-            // Calcula la hipotenusa del triangulo formado y discretiza el valor a 2.0*m_iX
+            m_uint16tulValue = 0XAA00; //brown
+            Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &m_stRect2, m_uint16tulValue);
+            
+            //################################
+            // - Hypotenuse
+            //   Calculate the hypotenuse of 
+            //   the triangle formed and dis-
+            //   cretize the value at 
+            //    -2.0 * m_iX
+            //################################
+           
             m_iHip = (sqrt(128*128 + 4*m_iX*m_iX))/(-2.0*m_iX);
-            // Dibuja la línea blanca
+            
+            // Paint the white line
             m_stRect1.xMin = m_stRect2.xMax ;
             m_stRect1.xMax = m_stRect2.xMax + m_iHip;
             m_stRect1.yMin = m_iZ + m_iX + j - 2;
             m_stRect1.yMax = m_iZ + m_iX + j - 1;
-
-            m_uint16tulValue = 0XAA00; //brown
-            Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &m_stRect2, m_uint16tulValue);
-
             m_uint16tulValue = 0XFFFF; //white
             Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &m_stRect1, m_uint16tulValue);
 
+            // Upper triangule (sky)
             m_stRect2.xMin = (128/(-2.0*m_iX))*j;
             m_stRect2.xMax = 128;
             m_stRect2.yMin = m_iZ + m_iX + j - 3;
@@ -67,7 +94,7 @@ uint8_t HOR::run()
             Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &m_stRect2, m_uint16tulValue);
         }
 
-        // Rectangulo inferior de la tierra
+        // Paint the lower rectangule (ground)
         m_stRect.yMin = m_iZ - m_iX;
         m_stRect.yMax = 128;
         m_uint16tulValue = 0XAA00; //brown
@@ -76,7 +103,14 @@ uint8_t HOR::run()
     }
     else if (m_iX>0)
     {
-        // Cuando se inclina a la izquierda
+        //################################
+        // - Roll to the right 
+        //    Upper rectangule the sky
+        //    Middle rectangule, the division
+        //    Lower rectangule the ground
+        //################################
+        
+        // Paint the upper rectangule (sky)
         m_stRect.yMin = -1;
         m_stRect.yMax =  m_iZ - m_iX ;
         m_uint16tulValue = 0X00FF; //blue
@@ -84,15 +118,25 @@ uint8_t HOR::run()
 
         for (j = 0; j <= 2*m_iX; j++)
         {
+            // Upper triangule (sky)
             m_stRect2.xMin = 0;
             m_stRect2.xMax = 128-(128/(2.0*m_iX))*j;
             m_stRect2.yMin = m_iZ - m_iX + j - 1;
             m_stRect2.yMax = m_iZ - m_iX + j ;
             m_uint16tulValue = 0X00FF; //blue
             Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &m_stRect2, m_uint16tulValue);
-
+            
+            //################################
+            // - Hypotenuse
+            //   Calculate the hypotenuse of 
+            //   the triangle formed and dis-
+            //   cretize the value at 
+            //    2.0 * m_iX
+            //################################
+            
             m_iHip = (sqrt(128*128 + 4*m_iX*m_iX))/(2.0*m_iX);
-
+            
+            // Paint the white line
             m_stRect1.xMin = m_stRect2.xMax;
             m_stRect1.xMax = m_stRect2.xMax + m_iHip;
             m_stRect1.yMin = m_iZ - m_iX + j ;
@@ -100,7 +144,7 @@ uint8_t HOR::run()
             m_uint16tulValue = 0XFFFF; //white
             Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &m_stRect1, m_uint16tulValue);
 
-
+            // Lower triangule (ground)
             m_stRect2.xMin = 128-(128/(2.0*m_iX))*j-m_iHip;
             m_stRect2.xMax = 128;
             m_stRect2.yMin = m_iZ - m_iX + j + 1;
@@ -109,6 +153,7 @@ uint8_t HOR::run()
             Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &m_stRect2, m_uint16tulValue);
         }
 
+        // Paint the lower rectangule (ground)
         m_stRect.yMin = m_iZ + m_iX + 2 ;
         m_stRect.yMax = 128;
         m_uint16tulValue = 0XAA00; //brown
@@ -116,18 +161,26 @@ uint8_t HOR::run()
     }
     else
     {
-        // Cuando no hay inclinación
+        //################################
+        // - Without roll
+        //    Upper rectangule the sky
+        //    Middle line, the division
+        //    Lower rectangule the ground
+        //################################
+        
+        // Paint the upper rectangule (sky)
         m_stRect.yMin = -1;
         m_stRect.yMax =  m_iZ + m_iX;
         m_uint16tulValue = 0X00FF; //blue
         Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &m_stRect, m_uint16tulValue);
-
+    
+        // Paint the middle line
         m_stRect.yMin = m_iZ - m_iX  ;
         m_stRect.yMax = m_iZ - m_iX + 1;
         m_uint16tulValue = 0XFFFF; //white
         Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &m_stRect, m_uint16tulValue);
 
-
+        // Paint the upper rectangule (ground)
         m_stRect.yMin = m_iZ - m_iX + 1;
         m_stRect.yMax = 128;
         m_uint16tulValue = 0XAA00; //brown
@@ -152,7 +205,8 @@ uint8_t HOR::setup()
  
 //################################
 // - Initializing screen, top half
-//   sky, bottom half ground
+//   sky, bottom half ground and
+//   the middle a white line 
 //################################
 
     Graphics_Rectangle m_stRectInit;
@@ -182,8 +236,7 @@ uint8_t HOR::setup()
 
 //################################
 // Reads message received
-// - Reads int data for m_iLines
-//   and bool data for m_bColor
+// - Reads uin16t data for ADC result
 // - Turns on RunFlag
 //################################
 
