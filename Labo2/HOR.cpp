@@ -2,8 +2,9 @@
  * PAINT.cpp
  *
  *  Created on: Oct 9, 2017
- *      Authors: Jose Pablo Martinez &
-                 Luisa Fernanda Quesada
+ *      Authors:  Luisa Fernanda Quesada  &
+ *                Jose Pablo Martinez
+ *               
  */
 
 /*
@@ -36,7 +37,7 @@ uint8_t HOR::run()
         m_uint16tulValue = 0X00FF; //blue
         Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &m_stRect, m_uint16tulValue);
 
-        // Rectangulo con línea de inclinacion
+        // Rectangulo con lÃ­nea de inclinacion
         for (j = 0; j <= -2*m_iX; j++)
         {
             m_stRect2.xMin = 0;
@@ -46,7 +47,7 @@ uint8_t HOR::run()
 
             // Calcula la hipotenusa del triangulo formado y discretiza el valor a 2.0*m_iX
             m_iHip = (sqrt(128*128 + 4*m_iX*m_iX))/(-2.0*m_iX);
-            // Dibuja la línea blanca
+            // Dibuja la lÃ­nea blanca
             m_stRect1.xMin = m_stRect2.xMax ;
             m_stRect1.xMax = m_stRect2.xMax + m_iHip;
             m_stRect1.yMin = m_iZ + m_iX + j - 2;
@@ -115,7 +116,7 @@ uint8_t HOR::run()
     }
     else
     {
-        // Cuando no hay inclinación
+        // Cuando no hay inclinaciÃ³n
         m_stRect.yMin = -1;
         m_stRect.yMax =  m_iZ + m_iX;
         m_uint16tulValue = 0X00FF; //blue
