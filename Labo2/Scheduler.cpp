@@ -100,45 +100,10 @@ uint8_t Scheduler::setup(void)
     return l_u8ReturnCode;
 }
 
-// ##############################################
-// Al final se lo agrego! Para saber como va a
-// quedar
-// ##############################################
-/*
 uint8_t Scheduler::CalculateNextSchedule(void)
 {
-    Task * l_pNextTask = (uintptr_t) 0;
-    uint8_t l_u8Schedule = 0;
-    char *l_pKey = NULL;
-    st_TaskInfo l_st_StructToAdd;
 
-    memset(m_aSchedule, 0, NUMBER_OF_SLOTS*sizeof(struct st_TaskInfo));
-
-    for (int l_iCounter = 0; l_iCounter < NUMBER_OF_SLOTS; l_iCounter++)
-    {
-        // -->> l_pNextTask = g_aTaskPointers[l_iCounter];
-        l_pNextTask = static_cast<Task *> (m_aSchedule[l_iCounter].pToAttach);
-        if(l_pNextTask == uintptr_t(0))
-        {
-            break;
-        }
-        if (l_pNextTask->getRunFlag())
-        {
-            l_pKey = l_pNextTask->getKey();
-            for(int l_iCounter = 0; l_iCounter < NUMBER_OF_SLOTS; l_iCounter++)
-            {
-                l_st_StructToAdd = m_aTaskInfoStructs[l_iCounter];
-                if(l_st_StructToAdd.pToKey == l_pKey)
-                {
-                    m_aSchedule[l_u8Schedule] = l_st_StructToAdd;
-                    l_u8Schedule++;
-                    break;
-                }
-            }
-        }
-    }
-    return(NO_ERR);
-} */
+} 
 
 // ##############################################
 // Collects messages from Tasks on m_aSchedule
